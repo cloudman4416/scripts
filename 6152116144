@@ -25,7 +25,7 @@ for i, v in pairs(game:GetService("ReplicatedStorage").PlayerValues:GetChildren(
 end
 -- tables
 
-local bosses = {"Shiron", "Zanegutsu Kuuchie", "Sabito", "Sanemi", "Yahaba", "Nezuko", "Slasher", "Susamaru", "Giyu"}
+local bosses = {"Zanegutsu Kuuchie", "Sabito", "Giyu", "Slasher", "Nezuko", "Shiron", "Susamaru", "Yahaba", "Sanemi"}
 local serverboss = {}
 local bossCFrame = {
     ["Shiron"] = CFrame.new(3193, 370, -3932),
