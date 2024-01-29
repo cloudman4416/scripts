@@ -766,6 +766,7 @@ orbgb:AddToggle({
                     if v:IsA("Model") and selectedorbs[v.Name] == true then 
                         local tween = tweento(v:GetModelCFrame())
                         tween.Completed:Wait()
+                        task.wait(0.3)
                         v:Destroy()
                         tped = true
                     end
