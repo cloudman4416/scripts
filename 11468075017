@@ -770,7 +770,7 @@ orbgb:AddToggle({
                         tped = true
                     end
                 end
-                if tpde then
+                if tped then
                     local back = tweento(oldpos)
                     back.Completed:Wait()
                 end
