@@ -297,9 +297,16 @@ function CurrentWeapon()
 	if not ret then return game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool").Name end
 	return ret
 end
+local deb = 0
+task.spawn(function()
+	while true do
+		deb = 0
+		task.wait(0.175)
+	end
+end)
 function AttackFunction()
 	local ac = CombatFrameworkR.activeController
-	if ac and ac.equipped then
+	if ac and ac.equipped and deb == 0 then
 		for indexincrement = 1, 1 do
 			local bladehit = getAllBladeHits(60)
 			if #bladehit > 0 then
