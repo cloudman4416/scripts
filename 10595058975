@@ -1,0 +1,166 @@
+-- VARIABLES
+local player = game.Players.LocalPlayer
+
+-- TABLES
+local levelReq = {
+    [1] = 21,
+    [2] = 24,
+    [3] = 29,
+    [4] = 36,
+    [5] = 45,
+    [6] = 56,
+    [7] = 69,
+    [8] = 84,
+    [9] = 101,
+    [10] = 120,
+    [11] = 141,
+    [12] = 164,
+    [13] = 189,
+    [14] = 216,
+    [15] = 245,
+    [16] = 275,
+    [17] = 309,
+    [18] = 343,
+    [19] = 381
+}
+
+-- FUNCTIONS
+function tpto(pos)
+    pcall(function()
+        player.Character.HumanoidRootPart.CFrame = pos
+    end)
+end
+function LevelUp()
+    local oldpos = player.Character.HumanoidRootPart.CFrame
+    tpto(CFrame.new(790, 235, 2121))
+    task.wait(1)
+    fireproximityprompt(workspace.NPCs.Aretim.ProximityPrompt)
+    task.wait(1)
+    local args = {
+        [1] = game:GetService("Players").LocalPlayer.PlayerGui.NPCDialogue.BG.Options.Option
+    }
+
+    game:GetService("Players").LocalPlayer.PlayerGui.NPCDialogue.RemoteEvent:FireServer(unpack(args))
+    task.wait(6)
+    local args = {
+        [1] = 3,
+        [2] = 0,
+        [3] = 0,
+        [4] = 0,
+        [5] = 0
+    }
+
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Information"):WaitForChild("StatAllocation"):FireServer(unpack(args))
+    tpto(oldpos)
+end
+
+-- GUI
+local repo = 'https://raw.githubusercontent.com/cloudman4416/CloudLib/main/'
+local Library = loadstring(game:HttpGet(repo .. 'lin.lua'))()
+
+local Window = Library:CreateWindow({
+    Title = 'Main Script Arcane Lineage',
+    Center = true,
+    AutoShow = true,
+    TabPadding = 8,
+    MenuFadeTime = 0.2
+})
+
+local Tabs = {
+    ["Farm"] = Window:AddTab('Farm'),
+    ['UI Settings'] = Window:AddTab('UI Settings'),
+}
+
+-- UI Settings
+local UIgb = Tabs["UI Settings"]:AddRightGroupbox('Settings')
+
+UIgb:AddButton('Unload', function() Library:Unload() end)
+
+--FARM Tab
+local autoDodge = false
+local autoStrike = false
+local autoStats = false
+
+local farmsettingsgb = Tabs["Farm"]:AddLeftGroupbox('Farm')
+
+farmsettingsgb:AddToggle('Auto Dodge', {
+    Text = 'Auto Dodge',
+    Default = false, 
+    Tooltip = nil, 
+
+    Callback = function(state)
+        task.spawn(function()
+            autoDodge = state
+            while autoDodge do
+                task.wait()
+                local args = {
+                    [1] = {
+                        [1] = true,
+                        [2] = true
+                    },
+                    [2] = "DodgeMinigame"
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Information"):WaitForChild("RemoteFunction"):FireServer(unpack(args))               
+                task.wait(0.1)
+            end
+        end)
+    end
+})
+
+farmsettingsgb:AddToggle('Auto Strike', {
+    Text = 'Auto Strike',
+    Default = false, 
+    Tooltip = nil, 
+
+    Callback = function(state)
+        task.spawn(function()
+            autoStrike = state
+            while autoStrike do
+                pcall(function()
+                    local currentFight = player.Character:WaitForChild("FightInProgress").Value
+                    local args = {
+                        [1] = currentFight
+                    }        
+                    local ennemyTeam = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Data"):WaitForChild("GetOtherTeam"):InvokeServer(unpack(args))
+                    for i, v in pairs(ennemyTeam:GetChildren()) do
+                        local args = {
+                            [1] = "Attack",
+                            [2] = "Strike",
+                            [3] = {
+                                ["Attacking"] = v.Value
+                            }
+                        }  
+                        player.PlayerGui.Combat.CombatHandle.RemoteFunction:InvokeServer(unpack(args)) 
+                        break       
+                    end
+                end)
+                task.wait()
+            end
+        end)
+    end
+})
+
+farmsettingsgb:AddToggle('Auto Stats', {
+    Text = 'Auto Stats',
+    Default = false, 
+    Tooltip = nil, 
+
+    Callback = function(state)
+        task.spawn(function()
+            autoStats = state
+            while autoStats do
+                local txt = player.PlayerGui.HUD.Holder.Level.Text
+                local tab = string.split(txt, " ")
+                local level = tonumber(tab[2])
+                local essence = tonumber(player.PlayerGui.HUD.Holder.Essence.Text)
+                local essReq = levelReq[level]
+                if essence >= essReq and not player.Character:FindFirstChild("FightInProgress") then
+                    LevelUp()
+                end
+                player.PlayerGui.HUD.StatAllocate.Visible = false
+                task.wait()
+            end
+        end)
+    end
+})
