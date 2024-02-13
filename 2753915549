@@ -1,6 +1,9 @@
---repeat task.wait() until game:Isloaded()
+repeat task.wait() until game:Isloaded()
 local player = game.Players.LocalPlayer
 local ts = game:GetService("TweenService")
+local antifall = Instance.new("BodyVelocity")
+antifall.Name = "MyBodyVelocity"
+antifall.Velocity = Vector3.new(0, 0, 0)
 
 local GuideModule = require(game:GetService("ReplicatedStorage").GuideModule)
 local Quests = require(game:GetService("ReplicatedStorage").Quests)
@@ -347,10 +350,26 @@ function GetMob(name)
 	end
 end
 
+function GetClosestMob(name)
+	local closest
+	local closestDist = math.huge
+	for _, mob in pairs(workspace.Enemies:GetChildren()) do
+		if mob.Name == name and mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0 then
+			if player:DistanceFromCharacter(mob.HumanoidRootPart.Position) < closestDist then
+				closest = mob
+				closestDist = player:DistanceFromCharacter(mob.HumanoidRootPart.Position)
+			end
+		end
+	end
+	return closest
+end
+
 function RegroupMobs(name)
 	for _, mob in pairs(workspace.Enemies:GetChildren()) do
 		if mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
 			if player:DistanceFromCharacter(mob.HumanoidRootPart.Position) <= 350 then
+				local af = antifall:Clone()
+				af.Parent = mob.HumanoidRootPart
 				if name == "All" then
 					mob.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame * CFrame.new(0, -30, 0)
 				else
@@ -366,6 +385,11 @@ end
 -- SCRIPTS
 
 task.spawn(function()
+	local args = {
+		[1] = "AbandonQuest"
+	}
+	
+	game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer(unpack(args))	
 	local antifall = Instance.new("BodyVelocity")
     antifall.Velocity = Vector3.new(0, 0, 0)
     antifall.Name = "MyBodyVelocity"
@@ -379,7 +403,7 @@ task.spawn(function()
 			local tasks = TakeQuest()
 			repeat task.wait()
 				for mobName, nbr in pairs(tasks) do
-					local target = GetMob(mobName)
+					local target = GetClosestMob(mobName)
 					if target then
 						local tween = tweento(target:GetModelCFrame() * CFrame.new(0, 30, 0)) 
 						tween.Completed:Wait()
@@ -390,9 +414,11 @@ task.spawn(function()
 							task.wait()
 						end
 					else
+						pcall(function()
 						if player:DistanceFromCharacter(workspace._WorldOrigin.EnemySpawns[mobName].Position) > 100 then
 							tweento(workspace._WorldOrigin.EnemySpawns[mobName].CFrame * CFrame.new(0, 30, 0)).Completed:Wait()
 						end
+						end)
 					end
 				end
 			until not QuestC.Visible or _G.Settings["Main"]["Auto Farm Level"] == false
