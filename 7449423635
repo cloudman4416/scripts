@@ -39,6 +39,22 @@ for _, v in pairs(getgc()) do
 	end
 end
 
+local CoreGui = game:GetService("StarterGui")
+
+CoreGui:SetCore("SendNotification", {
+	Title = "FOR YOUR INFORMATION";
+	Text = "THE SCRIPT WILL REJOIN A LOWEST SERVER AFTER 30 MINUTES TO PREVENTS DETECTION OF THE ANTICHEAT";
+	Duration = 30;
+})
+
+local args = {
+    [1] = "SetTeam",
+    [2] = "Marines"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer(unpack(args))
+
+game:GetService("Players").LocalPlayer.PlayerGui.Main.ChooseTeam:Destroy()
+
 -- CONFIGS
 
 
@@ -445,3 +461,25 @@ task.spawn(function()
 	end
 	antifall:Destroy()
 end)
+
+
+task.wait(30)
+
+local Http = game:GetService("HttpService")
+local TPS = game:GetService("TeleportService")
+local Api = "https://games.roblox.com/v1/games/"
+
+local _place = game.PlaceId
+local _servers = Api.._place.."/servers/Public?sortOrder=Asc&limit=100"
+function ListServers(cursor)
+   local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
+   return Http:JSONDecode(Raw)
+end
+
+local Server, Next; repeat
+   local Servers = ListServers(Next)
+   Server = Servers.data[1]
+   Next = Servers.nextPageCursor
+until Server
+
+TPS:TeleportToPlaceInstance(_place,Server.id,game.Players.LocalPlayer)
