@@ -1,4 +1,4 @@
-
+local player = game.Players.LocalPlayer
 local collectchest = false
 task.spawn(function()
     while task.wait() do
