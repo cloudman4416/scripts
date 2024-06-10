@@ -1,0 +1,214 @@
+
+local collectchest = false
+task.spawn(function()
+    while task.wait() do
+        if collectchest then
+            repeat task.wait()
+                if collectchest then
+                    pcall(function()
+                        for a, b in pairs(game.Workspace.Debree:GetChildren()) do
+                            if b.Name == "Loot_Chest" then
+                                for c, d in pairs(b.Drops:GetChildren()) do
+                                    b.Add_To_Inventory:InvokeServer(d.Name)
+                                end
+                                b:Destroy()
+                            end
+                        end 
+                    end)
+                end
+            until not collectchest
+        end
+    end
+end)
+
+function findMob(hrp)
+    for i, v in pairs(workspace.Mobs:GetChildren()) do
+        if v:IsA("Folder") and v:FindFirstChildWhichIsA("Model") then   
+            local model = v:FindFirstChildWhichIsA("Model")
+            if model:FindFirstChild("Humanoid") and model:FindFirstChild("Humanoid").Health > 0 then
+                if hrp then
+                    if model:FindFirstChild('HumanoidRootPart') then
+                        return model
+                    end
+                else
+                    return model
+                end
+            end
+        end
+    end
+end
+
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "OniHub|Project Slayers🎆🥶", HidePremium = false, SaveConfig = false, ConfigFolder = "OniSave"})
+
+local GlobalGKA = Window:MakeTab({
+    Name = "Global KillAura",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local mugan = Window:MakeTab({
+    Name = "Auto Clash ",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+
+local ArrowKA = false
+local BringMobs = false
+--GlobalGKA
+
+GlobalGKA:AddToggle({
+    Name = 'Arrow KA',
+    Default = false,
+    Callback = function(state)
+        ArrowKA = state
+        task.spawn(function()
+            while ArrowKA do 
+                local target =  findMob(true)
+                if target then
+                    local args = {
+                        [1] = "arrow_knock_back_damage",
+                        [2] = player.Character,
+                        [3] = target:GetModelCFrame(),
+                        [4] = target,
+                        [5] = math.huge,
+                        [6] = math.huge
+                    }
+
+                    game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S_:InvokeServer(unpack(args))
+                end
+                task.wait()
+            end
+        end)
+        task.spawn(function()
+            while ArrowKA do
+                local args = {
+                    [1] = "skil_ting_asd",
+                    [2] = player,
+                    [3] = "arrow_knock_back",
+                    [4] = 5
+                }
+
+                game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S_:InvokeServer(unpack(args))
+                task.wait(6)
+            end
+        end)
+    end
+})
+--Bring Mobs
+GlobalGKA:AddToggle({
+    Name = 'Bring Mobs',
+    Default = false,
+    Callback = function(state)
+    BringMobs = state
+    task.spawn(function()
+        while BringMobs do 
+            local target = findMob(true)
+            if target then
+                repeat task.wait()
+                    local args = {
+                        [1] = "piercing_arrow_damage",
+                        [2] = player,
+                        [3] = target:GetModelCFrame(),
+                        [4] = math.huge
+                    }
+                    game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S_:InvokeServer(unpack(args))
+                until target.Humanoid.Health <= 0 or not BringMobs
+            end
+            task.wait()
+        end
+    end)
+    task.spawn(function()
+        while BringMobs do
+            local args = {
+                [1] = "skil_ting_asd",
+                [2] = player,
+                [3] = "arrow_knock_back",
+                [4] = 5
+            }
+            game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S_:InvokeServer(unpack(args))
+            task.wait(6)
+        end
+    end)
+end})
+
+-- Assuming required modules
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+GlobalGKA:AddToggle({
+Name = "ice GKA",
+Default = false,
+Callback = function(state)
+    while state do
+        local args = {
+            [1] = "skil_ting_asd",
+            [2] = game.Players.LocalPlayer,
+            [3] = "ice_demon_art_wintry_icicles", -- Corrected skill name
+            [4] = 5
+        }
+        
+        ReplicatedStorage.Remotes.To_Server.Handle_Initiate_S:FireServer(unpack(args))
+        
+        for i = 1, 7 do
+            local args = {
+                [1] = "ice_demon_art_wintry_icicles_damage", -- Corrected skill damage name
+                [2] = workspace:WaitForChild("cloudman55555"),
+                [3] = CFrame.new(2772.278076171875, 671.7008666992188, -828.6742553710938, 0, -4.371138828673793e-08, -1, -0.00018310546875, 1, -4.371138828673793e-08, 1, 0.00018310546875, -8.003793808275539e-12)
+            }
+            
+            ReplicatedStorage.Remotes.To_Server.Handle_Initiate_S:FireServer(unpack(args))
+        end
+        
+        task.wait(15)
+    end
+end
+})
+
+--Thunder Gka
+GlobalGKA:AddToggle({
+    Name = "Thunder Gka",
+    Default = false,
+    Callback = function(state)
+    thunderKA = state
+    while thunderKA do
+    wait(0.75)
+    
+    local ohString1 = "skil_ting_asd"
+    local ohInstance2 = game:GetService("Players").LocalPlayer
+    local ohString3 = "Thunderbreathingrapidslashes"
+    local ohNumber4 = 5
+    
+    game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(ohString1, ohInstance2, ohString3, ohNumber4)
+    
+    for i = 1, 7 do
+        wait(0.95)
+        local ohString1 = "ricespiritdamage"
+        local ohInstance2 = workspace:FindFirstChild(tostring(game.Players.LocalPlayer))
+        local ohNumber4 = 150
+    
+        game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(ohString1, ohInstance2, workspace:FindFirstChild(tostring(game.Players.LocalPlayer)).HumanoidRootPart.CFrame, ohNumber4)
+    end
+    end
+end})
+
+mugan:AddButton({
+    Name = "Insta Clash",
+    Callback = function()
+        spawn(function()
+            local args = {
+                [1] = "Change_Value",
+                [2] = workspace:WaitForChild("Debree"):WaitForChild("clash_folder"):WaitForChild(game.Players.LocalPlayer.Name.."vsEnmu"):WaitForChild(game.Players.LocalPlayer.Name),
+                [3] = 10000
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("To_Server"):WaitForChild("Handle_Initiate_S"):FireServer(unpack(args))
+        end)
+    end
+})
+
+mugan:AddToggle({
+    Name = "Auto Chest",
+    Default = false,
+    Callback = function(state)
+        collectchest = state
+    end
+})
