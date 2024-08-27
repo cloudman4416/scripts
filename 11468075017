@@ -108,6 +108,7 @@ function checkdistance(obj)
 end
 
 function tweento(obj)
+
     local Distance = (obj.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
     local Speed = Distance/tweenspeed
 
@@ -405,20 +406,26 @@ autofarmgb:AddToggle({
             local antifall = Instance.new("BodyVelocity")
             antifall.Velocity = Vector3.new(0, 0, 0)
             antifall.Parent = player.Character.HumanoidRootPart
-            while AutoNpc do
-                local target = findMob(true)
-                if target then
-                    local tween = tweento(target:GetModelCFrame() * CFrame.new(0, 0, 10))
-                    tween.Completed:Wait()
-                    if target and target:FindFirstChild("Humanoid").Health > 0 then
-                        while target:FindFirstChild("Humanoid").Health > 0 and AutoNpc do
-                            tpto(target:GetModelCFrame() * CFrame.new(0, 0, 10))
-                            task.wait()
+            while AutoNpc do task.wait()
+                for i, target in pairs(workspace.Mobs:GetChildren()) do
+                    pcall(function()
+                    if not target:FindFirstChildWhichIsA("Model") then
+                        local tween = tweento(CFrame.new(target.Npc_Configuration:WaitForChild("spawnlocaitonasd123").Value) * CFrame.new(0, 20, 0))
+                        tween.Completed:Wait()
+                    end
+                    end)
+                    local Ennemy = target:FindFirstChildWhichIsA("Model")
+                    if Ennemy then
+                        local tween = tweento(Ennemy:GetModelCFrame() * CFrame.new(0, 0, 10))
+                        tween.Completed:Wait()
+                        if Ennemy:FindFirstChild("Humanoid") and Ennemy:FindFirstChild("Humanoid").Health > 0 then
+                            while Ennemy:FindFirstChild("Humanoid").Health > 0 and AutoNpc do
+                                tpto(Ennemy:GetModelCFrame() * CFrame.new(0, 0, 10))
+                                task.wait()
+                            end
                         end
                     end
-                    task.wait()
                 end
-                task.wait()
             end
             antifall:Destroy()
         end)
