@@ -10,6 +10,7 @@ local guis = player.PlayerGui
 local rod = guis.hud.safezone.backpack.hotbar["1"].tool
 local zones = {"None"}
 local eventZones = {}
+local tpSpot = {}
 for i, v in require(game:GetService("ReplicatedStorage").modules.library.fish.zones) do
 	if v.Priority >= 100 then
         table.insert(eventZones, i)
@@ -18,6 +19,9 @@ for i, v in require(game:GetService("ReplicatedStorage").modules.library.fish.zo
             table.insert(zones, i)
         end
 	end
+end
+for i, v in workspace.world.spawns.TpSpots:GetChildren() do
+    table.insert(tpSpot, v.Name)
 end
 
 
@@ -37,12 +41,14 @@ local Window = Library:CreateWindow({
 
 local Tabs = {
     ["Main"] = Window:AddTab('Main'),
+    ["Teleport"] = Window:AddTab('Teleport'),
     ["UI Settings"] = Window:AddTab('UI Settings'),
 }
 
 local Groupbox = {
     ["Main_Left_1"] = Tabs["Main"]:AddLeftGroupbox("Main"),
     ["Main_Left_2"] = Tabs["Main"]:AddLeftGroupbox("Placement"),
+    ["Teleport_Left_1"] = Tabs["Teleport"]:AddLeftGroupbox("Teleports"),
     ["UI Settings_Left_1"] = Tabs['UI Settings']:AddLeftGroupbox('Menu')
 }
 
@@ -106,6 +112,17 @@ local loopTp_t = Groupbox["Main_Left_2"]:AddToggle("Loop Tp", {
     Text = "Loop Tp",
     Default = false,
     Tooltip = nil
+})
+
+Groupbox["Teleport_Left_1"]:AddDropdown('Zone Teleport', {
+    Text = 'Teleport to a location',
+    Tooltip = nil,
+    Values = tpSpot,
+    Default = 0,
+
+    Callback = function(Value)
+        player.Character.HumanoidRootPart.Position = workspace.world.spawns.TpSpots[Value].Position
+    end
 })
 
 -- SETTING TOGGLES CALLBACK
@@ -193,7 +210,6 @@ zoneCast_t:OnChanged(function(Value)
         connections["zonecast"] = rod.Value.ChildAdded:Connect(function(bobber)
             if bobber.Name == "bobber" then
                 bobber:WaitForChild("RopeConstraint").Length = math.huge
-                --bobber:WaitForChild("RopeConstraint").Enabled = false
                 Instance.new("BodyVelocity", bobber).Velocity = Vector3.new(0, 0, 0)
                 bobber.CFrame = ((fishing:FindFirstChild(Lambda()) and fishing:FindFirstChild(Lambda()).CFrame) or fishing:FindFirstChild(zoneCast_d.Value).CFrame)
             end
