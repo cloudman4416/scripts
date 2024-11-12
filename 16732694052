@@ -156,7 +156,8 @@ Groupbox["Teleport_Left_1"]:AddDropdown('Zone Teleport', {
     Default = 0,
 
     Callback = function(Value)
-        player.Character.HumanoidRootPart.Position = workspace.world.spawns.TpSpots[Value].Position
+        player:RequestStreamAroundAsync(workspace.world.spawns.TpSpots[Value].Position)
+        player.Character.HumanoidRootPart.CFrame = workspace.world.spawns.TpSpots[Value].CFrame + Vector3.new(0, 1, 0)
     end
 })
 
@@ -280,7 +281,7 @@ autoBestiary_t:OnChanged(function(Value)
                 end
             end
             if imppossible then warn("skipped caus impossible"); continue end
-            repeat task.wait(1) until best:FindFirstChild(v)
+            repeat task.wait(1) until best:FindFirstChild(i)
         end
     end
 end)
