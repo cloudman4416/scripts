@@ -4,6 +4,10 @@ local StatsService = game:GetService('Stats')
 local VirtualInputManager = game:GetService('VirtualInputManager')
 local GuiService = game:GetService("GuiService")
 local ping = StatsService.Network.ServerStatsItem['Data Ping']
+local mod = require(game:GetService("ReplicatedStorage").modules.library.fish)
+local best = game:GetService("ReplicatedStorage").playerstats[game.Players.LocalPlayer.Name].Bestiary
+local zonesMod = require(game:GetService("ReplicatedStorage").modules.library.fish.zones)
+local crabZones = require(game:GetService("ReplicatedStorage").modules.library.fish.zones.crabzone)
 local fishing = workspace.zones.fishing
 local pos
 local guis = player.PlayerGui
@@ -11,6 +15,21 @@ local rod = guis.hud.safezone.backpack.hotbar["1"].tool
 local zones = {"None"}
 local eventZones = {}
 local tpSpot = {}
+local npcs = {}
+local npcsToLoad = {
+    [workspace.world.spawns.TpSpots.sunstone] = {
+        "Merlin";
+    };
+}
+
+for i, v in npcsToLoad do
+	for a, b in v do
+		task.spawn(function()
+			npcs[b] = workspace.world.npcs:WaitForChild(b)
+		end)
+	end
+	game.Players.LocalPlayer:RequestStreamAroundAsync(i.Position)
+end
 for i, v in require(game:GetService("ReplicatedStorage").modules.library.fish.zones) do
 	if v.Priority >= 100 then
         table.insert(eventZones, i)
@@ -41,6 +60,7 @@ local Window = Library:CreateWindow({
 
 local Tabs = {
     ["Main"] = Window:AddTab('Main'),
+    ["Auto Bestiary"] = Window:AddTab('Auto Bestiary'),
     ["Teleport"] = Window:AddTab('Teleport'),
     ["UI Settings"] = Window:AddTab('UI Settings'),
 }
@@ -48,6 +68,7 @@ local Tabs = {
 local Groupbox = {
     ["Main_Left_1"] = Tabs["Main"]:AddLeftGroupbox("Main"),
     ["Main_Left_2"] = Tabs["Main"]:AddLeftGroupbox("Placement"),
+    ["Auto Bestiary_Left_1"] = Tabs["Auto Bestiary"]:AddLeftGroupbox("Auto Bestiary"),
     ["Teleport_Left_1"] = Tabs["Teleport"]:AddLeftGroupbox("Teleports"),
     ["UI Settings_Left_1"] = Tabs['UI Settings']:AddLeftGroupbox('Menu')
 }
@@ -112,6 +133,20 @@ local loopTp_t = Groupbox["Main_Left_2"]:AddToggle("Loop Tp", {
     Text = "Loop Tp",
     Default = false,
     Tooltip = nil
+})
+
+local autoBestiary_t = Groupbox["Auto Bestiary_Left_1"]:AddToggle("Auto Bestiary", {
+    Text = "Auto Complete Bestiary",
+    Default = false,
+    Tooltip = "Use with Reinforced Rod pls"
+})
+
+local autoBestiary_d = Groupbox["Auto Bestiary_Left_1"]:AddDropdown("Rarity Selector", {
+    Text = "Rarity Selector",
+    Default = 0,
+    Values = mod.Rarities,
+    Tooltip = nil,
+    Multi = true
 })
 
 Groupbox["Teleport_Left_1"]:AddDropdown('Zone Teleport', {
@@ -218,6 +253,35 @@ zoneCast_t:OnChanged(function(Value)
         pcall(function()
             connections["zonecast"]:Disconnect()
         end)
+    end
+end)
+
+autoBestiary_t:OnChanged(function(Value)
+    if Value then
+        zoneCast_t:SetValue(true)
+        for i, v in mod do
+            if autoBestiary_t.Value == false then
+                break
+            end
+            if typeof(v) == "table" and v.Rarity and not autoBestiary_d.Value[v.Rarity] then
+                continue
+            end
+            if best:FindFirstChild(i) then
+                continue
+            end
+            print(`Need Fish : {i}`)
+            local imppossible = true
+            for a, b in zonesMod do
+                if table.find(b.Pool, i) then
+                    print(`You Will Find It In {a}`)
+                    imppossible = false
+                    zoneCast_d:SetValue(a)
+                    break
+                end
+            end
+            if imppossible then warn("skipped caus impossible"); continue end
+            repeat task.wait(1) until best:FindFirstChild(v)
+        end
     end
 end)
 
@@ -344,3 +408,35 @@ end
 
 EventWbhook()
 game:GetService("ReplicatedStorage").world.event:GetPropertyChangedSignal("Value"):Connect(EventWbhook)
+
+--[[for i, v in game.Players.LocalPlayer.Backpack:GetChildren() do
+	if v.Name == "Treasure Map" then
+	game:GetService("Players").LocalPlayer.PlayerGui.hud.safezone.backpack.events.equip:FireServer(v)
+	workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Jack Marrow"):WaitForChild("treasure"):WaitForChild("repairmap"):InvokeServer()
+	end
+end]]
+
+--[[for i, v in game.Players.LocalPlayer.Backpack:GetChildren() do
+	if v.Name == "Treasure Map" then
+		local map = v.link.Value
+		local args = {
+		    [1] = {
+		        ["y"] = map.x.Value,
+		        ["x"] = map.y.Value,
+		        ["z"] = map.z.Value
+		    }
+		}
+
+		game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("open_treasure"):FireServer(unpack(args))
+
+		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position = Vector3.new(map.x.Value, map.y.Value, map.z.Value)
+		break
+	end
+end]]
+--[[
+task.wait(5)
+
+for i, v in workspace.world.chests:GetChildren() do
+	fireproximityprompt(v.ProximityPrompt, 0)
+	task.wait(1)
+end]]
