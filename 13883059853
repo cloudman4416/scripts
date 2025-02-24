@@ -342,7 +342,7 @@ end)
 -- ANNOYING GUI PART
 
 
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/jensonhirst/Orion/refs/heads/main/source')))()
 
 local Window = OrionLib:MakeWindow({Name = "CloudHub | discord.gg/wgFBpD7mRh", HidePremium = false, SaveConfig = false, ConfigFolder = "CloudHub "})
 
