@@ -38,7 +38,7 @@ function findMob(hrp)
     end
 end
 
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/cloudman4416/CloudLib/refs/heads/main/Orion.lua')))()
 local Window = OrionLib:MakeWindow({Name = "OniHub|Project Slayers🎆🥶", HidePremium = false, SaveConfig = false, ConfigFolder = "OniSave"})
 
 local GlobalGKA = Window:MakeTab({
