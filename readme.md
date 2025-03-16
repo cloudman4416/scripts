@@ -1,0 +1,1 @@
+These scripts are open source for a reason, you're not allowed to resell them.
