@@ -11,7 +11,7 @@ local client = Players.LocalPlayer
 local playerValues = game:GetService("ReplicatedStorage").PlayerValues:WaitForChild(client.Name)
 local playerData = game:GetService("ReplicatedStorage").Player_Data:WaitForChild(client.Name)
 local distance = 15
-
+ 
 -- DUMP
 local places = require(game:GetService("ReplicatedStorage").Modules.Global.Map_Locaations)
 local bosses = {}
