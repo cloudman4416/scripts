@@ -39,7 +39,6 @@ for i, v in temp do
     local info = require(v.Npc_Configuration)
     bosses[info["Name"]] = info["Npc_Spawning"]["Spawn_Locations"][1]
 end
-
 temp = nil
 
 -- FUNCTION

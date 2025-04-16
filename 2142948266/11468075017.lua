@@ -335,6 +335,7 @@ Tabs["Buffs"]:AddToggle("tWarDrum", {
         end
     end
 })
+
 options["tWarDrum"]:SetValue(true)
 
 Tabs["Buffs"]:AddToggle("tSunImm", {
