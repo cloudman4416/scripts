@@ -369,7 +369,6 @@ Tabs["Buffs"]:AddToggle("tInfBreath", {
     end
 })
 
-
 Window:SelectTab(1)
 
 SaveManager:SetLibrary(Library)
