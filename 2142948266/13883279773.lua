@@ -632,17 +632,19 @@ Tabs["Quests"]:AddToggle("tAutoRice", {
 
                     while playerData.Quest.Current.Value == "Help Sarah pick rice" do
                         local rice = workspace.StarterVillage_RiceStrings:FindFirstChild("RiceString")
-                        tweento(rice.CFrame).Completed:Wait()
-                        task.wait(0.2)
-                        local args = {
-                            [1] = "givericequestthing",
-                            [2] = `Players.{client.Name}.PlayerGui.localscript_cache.Prompts_Handler`,
-                            [3] = client,
-                            [4] = rice,
-                            [5] = os.clock()
-                        }
-                        
-                        Handle_Initiate_S:FireServer(unpack(args))
+                        if rice then
+                            tweento(rice.CFrame).Completed:Wait()
+                            task.wait(0.2)
+                            local args = {
+                                [1] = "givericequestthing",
+                                [2] = `Players.{client.Name}.PlayerGui.localscript_cache.Prompts_Handler`,
+                                [3] = client,
+                                [4] = rice,
+                                [5] = os.clock()
+                            }
+                            
+                            Handle_Initiate_S:FireServer(unpack(args))
+                        end
                         task.wait(0.2)
                     end
                 end
