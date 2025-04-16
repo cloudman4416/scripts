@@ -31,7 +31,6 @@ for i, v in workspace.Mobs.Bosses:GetDescendants() do
     end
 end
 
-
 local temp = {
     workspace.Mobs.Heikin["Reaper Boss"];
     workspace.Mobs.Village_1_quest_bandits.BanditBoss;
