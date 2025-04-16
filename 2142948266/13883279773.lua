@@ -30,7 +30,6 @@ for i, v in workspace.Mobs.Bosses:GetDescendants() do
         bosses[info["Name"]] = info["Npc_Spawning"]["Spawn_Locations"][1]
     end
 end
-
 local temp = {
     workspace.Mobs.Bandits.Zone1.Boss;
     workspace.Mobs.Bandits.Zone2.Kaden;
@@ -204,6 +203,7 @@ local Tabs = {
     ["Auto Farm"] = Window:AddTab({Title = "Auto Farm", Icon = ""});
     ["Kill Auras"] = Window:AddTab({Title = "Kill Auras", Icon = ""});
     ["Misc"] = Window:AddTab({Title = "Misc", Icon = ""});
+    ["Quests"] = Window:AddTab({Title = "Quests", Icon = ""});
     ["Buffs"] = Window:AddTab({Title = "Buffs", Icon = ""});
     ["Webhook Settings"] = Window:AddTab({Title = "Webhook settings", Icon = ""});
     ["Settings"] = Window:AddTab({Title = "Settings", Icon = "settings"});
@@ -600,6 +600,56 @@ Tabs["Misc"]:AddButton({
         local unlock = Instance.new("Part")
         unlock.Name = "19241624"
         unlock.Parent = client.gamepasses
+    end
+})
+
+-- QUESTS
+
+Tabs["Quests"]:AddToggle("tAutoRice", {
+    Title = "Auto Rice";
+    Default = false;
+    Callback = function(Value)
+        task.spawn(function()
+            if Value then
+                local _conn = RunService.Stepped:Connect(noclip)
+                local antifall = Instance.new("BodyVelocity")
+                antifall.Velocity = Vector3.new(0, 0, 0)
+                antifall.Parent = client.Character.HumanoidRootPart
+                while options["tAutoRice"].Value do
+                    tweento(workspace.Sarah.realcf.Value).Completed:Wait()
+                    task.wait(0.2)
+                    local args = {
+                        [1] = "AddQuest",
+                        [2] = `Players.{client.Name}.PlayerGui.Npc_Dialogue.LocalScript.Functions`,
+                        [3] = os.clock(),
+                        [4] = playerData:WaitForChild("Quest"),
+                        [5] = {
+                            ["Current"] = "Help Sarah pick rice"
+                        }
+                    }
+                    Handle_Initiate_S:FireServer(unpack(args))
+                    task.wait(0.2)
+
+                    while playerData.Quest.Current.Value == "Help Sarah pick rice" do
+                        local rice = workspace.StarterVillage_RiceStrings:FindFirstChild("RiceString")
+                        tweento(rice.CFrame).Completed:Wait()
+                        task.wait(0.2)
+                        local args = {
+                            [1] = "givericequestthing",
+                            [2] = `Players.{client.Name}.PlayerGui.localscript_cache.Prompts_Handler`,
+                            [3] = client,
+                            [4] = rice,
+                            [5] = os.clock()
+                        }
+                        
+                        Handle_Initiate_S:FireServer(unpack(args))
+                        task.wait(0.2)
+                    end
+                end
+                _conn:Disconnect()
+                antifall:Destroy()
+            end
+        end)
     end
 })
 
