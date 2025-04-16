@@ -616,7 +616,7 @@ Tabs["Quests"]:AddToggle("tAutoRice", {
                 antifall.Velocity = Vector3.new(0, 0, 0)
                 antifall.Parent = client.Character.HumanoidRootPart
                 while options["tAutoRice"].Value do
-                    tweento(workspace.Sarah.realcf.Value).Completed:Wait()
+                    tweento(workspace.Sarah:GetModelCFrame()).Completed:Wait()
                     task.wait(0.2)
                     local args = {
                         [1] = "AddQuest",
