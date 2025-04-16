@@ -30,6 +30,7 @@ for i, v in workspace.Mobs.Bosses:GetDescendants() do
         bosses[info["Name"]] = info["Npc_Spawning"]["Spawn_Locations"][1]
     end
 end
+
 local temp = {
     workspace.Mobs.Heikin["Reaper Boss"];
     workspace.Mobs.Village_1_quest_bandits.BanditBoss;
