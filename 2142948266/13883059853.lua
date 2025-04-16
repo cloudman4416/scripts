@@ -21,7 +21,6 @@ local Handle_Initiate_S = game:GetService("ReplicatedStorage").Remotes.To_Server
 local Handle_Initiate_S_ = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("To_Server"):WaitForChild("Handle_Initiate_S_")
 local distance = 15
 
-
 -- DUMP
 local places = require(game:GetService("ReplicatedStorage").Modules.Global.Map_Locaations)
 local bosses = {}
