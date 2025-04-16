@@ -6,7 +6,7 @@ end)
 local baseUrl = "https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main"
 
 local succ, err = pcall(function()
-    loadstring(game:HttpGet(`{baseUrl}/{game.PlaceId}/{game.PlaceId}.lua`))()
+    loadstring(game:HttpGet(`{baseUrl}/{game.GameId}/{game.PlaceId}.lua`))()
 end)
 
 if not succ then
