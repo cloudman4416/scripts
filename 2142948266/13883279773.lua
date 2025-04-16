@@ -30,7 +30,6 @@ for i, v in workspace.Mobs.Bosses:GetDescendants() do
     end
 end
 
-
 local temp = {
     workspace.Mobs.Bandits.Zone1.Boss;
     workspace.Mobs.Bandits.Zone2.Kaden;
