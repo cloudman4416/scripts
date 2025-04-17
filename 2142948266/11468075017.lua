@@ -375,7 +375,9 @@ Tabs["Buffs"]:AddToggle("tInfBreath", {
 Window:SelectTab(1)
 
 SaveManager:SetLibrary(Library)
-SaveManager:SetFolder("CloudHub/babouche")
+makefolder(`CloudHub/{game.PlaceId}`)
+makefolder(`CloudHub/{game.PlaceId}/{client.UserId}`)
+SaveManager:SetFolder(`CloudHub/{game.PlaceId}/{client.UserId}`)
 SaveManager:BuildConfigSection(Tabs["Settings"])
 SaveManager:LoadAutoloadConfig()
 
