@@ -779,7 +779,7 @@ Tabs["Buffs"]:AddToggle("tGodMode", {
     Default = false,
     Callback = function(Value)
         if Value then
-            if options["tArrowKA"].Value then
+            if options["tArrowKA"].Value or options["tBringMob"].Value then
                 Library:Notify({
                     Title = "Attention",
                     Content = "Can't toggle godmode and arrow ka at the same time",
