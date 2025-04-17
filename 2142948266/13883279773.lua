@@ -60,13 +60,13 @@ function tpto(p1)
         client.Character.HumanoidRootPart.CFrame = p1
     end)
 end
-local counter = 0
-local time = tick()
---[[local function smartTp(dest:Vector3)
+
+local function smartTp(dest:CFrame)
+    dest = dest.Position
     local closest = nil
     local shortest = (client.Character.HumanoidRootPart.Position - dest).Magnitude
     for loc, coord in places do
-        if game:GetService("ReplicatedStorage").Player_Data.N1NJAx974.MapUi.UnlockedLocations:FindFirstChild(loc) and game:GetService("Players").LocalPlayer.PlayerGui.Map_Ui.Holder.Locations:FindFirstChild(loc) then
+        if playerData.MapUi.UnlockedLocations:FindFirstChild(loc) and game:GetService("Players").LocalPlayer.PlayerGui.Map_Ui.Holder.Locations:FindFirstChild(loc) then
             local dist = (coord-dest).Magnitude
             if dist < shortest then
                 closest = loc
@@ -81,10 +81,9 @@ local time = tick()
             [3] = closest
         }
         game:GetService("ReplicatedStorage"):WaitForChild("teleport_player_to_location_for_map_tang"):InvokeServer(unpack(args))
-        counter+=1
-        print(counter)
     end
-end]]
+    tweento(CFrame.new(dest)).Completed:Wait()
+end
 
 local function findBoss(name, hrp)
     for i, v in pairs(workspace.Mobs:GetDescendants()) do
@@ -605,6 +604,8 @@ Tabs["Misc"]:AddButton({
 
 -- QUESTS
 
+Tabs["Quests"]:AddSection("All These Functions Will Use A Smart Tp That Use Your Unlocked Map Location")
+
 Tabs["Quests"]:AddToggle("tAutoRice", {
     Title = "Auto Rice";
     Default = false;
@@ -616,7 +617,7 @@ Tabs["Quests"]:AddToggle("tAutoRice", {
                 antifall.Velocity = Vector3.new(0, 0, 0)
                 antifall.Parent = client.Character.HumanoidRootPart
                 while options["tAutoRice"].Value do
-                    tweento(workspace.Sarah:GetModelCFrame()).Completed:Wait()
+                    smartTp(workspace.Sarah:GetModelCFrame())
                     task.wait(0.2)
                     local args = {
                         [1] = "AddQuest",
@@ -630,7 +631,7 @@ Tabs["Quests"]:AddToggle("tAutoRice", {
                     Handle_Initiate_S:FireServer(unpack(args))
                     task.wait(0.2)
 
-                    while playerData.Quest.Current.Value == "Help Sarah pick rice" do
+                    while playerData.Quest.Current.Value == "Help Sarah pick rice" and options["tAutoRice"].Value do
                         local rice = workspace.StarterVillage_RiceStrings:FindFirstChild("RiceString")
                         if rice then
                             tweento(rice.CFrame).Completed:Wait()
@@ -652,6 +653,41 @@ Tabs["Quests"]:AddToggle("tAutoRice", {
                 antifall:Destroy()
             end
         end)
+    end
+})
+
+Tabs["Quests"]:AddToggle("tAutoWagon", {
+    Title = "Auto Transport Wagon";
+    Default = false;
+    Callback = function(Value)
+        if Value then
+            task.spawn(function()
+                local _conn = RunService.Stepped:Connect(noclip)
+                local antifall = Instance.new("BodyVelocity")
+                antifall.Velocity = Vector3.new(0, 0, 0)
+                antifall.Parent = client.Character.HumanoidRootPart
+                while options["tAutoWagon"].Value do
+                    smartTp(workspace["Grandpa Wagwon"]:GetModelCFrame())
+                    task.wait(0.2)
+                    local args = {
+                        [1] = "AddQuest",
+                        [2] = `Players.{client.Name}.PlayerGui.Npc_Dialogue.LocalScript.Functions`,
+                        [3] = os.clock(),
+                        [4] = playerData:WaitForChild("Quest"),
+                        [5] = {
+                            ["Current"] = "Deliver grandpa Wagwon's wagon",
+                        }
+                    }
+                    Handle_Initiate_S:FireServer(unpack(args))
+                    task.wait(0.2)
+                    --while playerData.Quest.Current.Value == "Deliver grandpa Wagwon's wagon" and workspace.Debree:FindFirstChild("wagonasd") do
+                        smartTp(CFrame.new(454.2309875488281, 275.26300048828125, -2670.489013671875))
+                    --end
+                end
+                _conn:Disconnect()
+                antifall:Destroy()
+            end)
+        end
     end
 })
 
@@ -701,6 +737,15 @@ Tabs["Buffs"]:AddToggle("tGodMode", {
     Default = false,
     Callback = function(Value)
         if Value then
+            if options["tArrowKA"].Value then
+                Library:Notify({
+                    Title = "Attention",
+                    Content = "Can't toggle godmode and arrow ka at the same time",
+                    Duration = 2
+                })
+                options["tGodMode"]:SetValue(false)
+                return
+            end
             task.spawn(function()
                 distance = 6
                 while options["tGodMode"].Value do
