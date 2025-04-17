@@ -31,7 +31,6 @@ for i, v in workspace.Mobs.Bosses:GetDescendants() do
         bosses[info["Name"]] = info["Npc_Spawning"]["Spawn_Locations"][1]
     end
 end
-
 local temp = {
     workspace.Mobs.Heikin["Reaper Boss"];
     workspace.Mobs.Village_1_quest_bandits.BanditBoss;
@@ -40,6 +39,7 @@ for i, v in temp do
     local info = require(v.Npc_Configuration)
     bosses[info["Name"]] = info["Npc_Spawning"]["Spawn_Locations"][1]
 end
+
 temp = nil
 
 -- FUNCTION
@@ -391,18 +391,13 @@ Tabs["Kill Auras"]:AddToggle("tArrowKA", {
     Default = false,
     Callback = function(Value)
         if Value then
-            --[[task.spawn(function()
-                while options.tArrowKA.Value do
-                    local args = {
-                        [1] = "skil_ting_asd",
-                        [2] = client,
-                        [3] = "arrow_knock_back",
-                        [4] = 5
-                    }
-                    Handle_Initiate_S_:InvokeServer(unpack(args))
-                    task.wait(6)
-                end
-            end)]]
+            if options["tBringMob"].Value then
+                Library:Notify({
+                    Title = "Attention",
+                    Content = "You'r succeptible to get kicked if you use two different KA",
+                    Duration = 5
+                })
+            end
             task.spawn(function()
                 while options.tArrowKA.Value do 
                     local target = findMob(true)
@@ -417,10 +412,8 @@ Tabs["Kill Auras"]:AddToggle("tArrowKA", {
                         }
 
                         Handle_Initiate_S:FireServer(unpack(args))
-                        task.wait(0.2)
-                    else
-                        task.wait()
                     end
+                    task.wait(0.2)
                 end
             end)
         end
@@ -432,18 +425,13 @@ Tabs["Kill Auras"]:AddToggle("tBringMob", {
     Default = false,
     Callback = function(Value)
         if Value then
-            --[[task.spawn(function()
-                while options.tBringMob.Value do
-                    local args = {
-                        [1] = "skil_ting_asd",
-                        [2] = client,
-                        [3] = "arrow_knock_back",
-                        [4] = 5
-                    }
-                    Handle_Initiate_S_:InvokeServer(unpack(args))
-                    task.wait(6)
-                end
-            end)]]
+            if options["tArrowKA"].Value then
+                Library:Notify({
+                    Title = "Attention",
+                    Content = "You'r succeptible to get kicked if you use two different KA",
+                    Duration = 5
+                })
+            end
             task.spawn(function()
                 while options.tBringMob.Value do 
                     local target = findMob(true)
@@ -609,6 +597,15 @@ Tabs["Buffs"]:AddToggle("tGodMode", {
     Default = false,
     Callback = function(Value)
         if Value then
+            if options["tArrowKA"].Value then
+                Library:Notify({
+                    Title = "Attention",
+                    Content = "Can't toggle godmode and arrow ka at the same time",
+                    Duration = 2
+                })
+                options["tGodMode"]:SetValue(false)
+                return
+            end
             task.spawn(function()
                 distance = 6
                 while options["tGodMode"].Value do
