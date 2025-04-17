@@ -392,19 +392,13 @@ Tabs["Kill Auras"]:AddToggle("tArrowKA", {
     Default = false,
     Callback = function(Value)
         if Value then
-            task.spawn(function()
-                while options.tArrowKA.Value do
-                    local args = {
-                        [1] = "skil_ting_asd",
-                        [2] = client,
-                        [3] = "arrow_knock_back",
-                        [4] = 5
-                    }
-
-                    Handle_Initiate_S_:InvokeServer(unpack(args))
-                    task.wait(6)
-                end
-            end)
+            if options["tBringMob"].Value then
+                Library:Notify({
+                    Title = "Attention",
+                    Content = "You'r succeptible to get kicked if you use two different KA",
+                    Duration = 5
+                })
+            end
             task.spawn(function()
                 while options.tArrowKA.Value do 
                     local target = findMob(true)
@@ -426,6 +420,54 @@ Tabs["Kill Auras"]:AddToggle("tArrowKA", {
         end
     end
 })
+
+Tabs["Kill Auras"]:AddToggle("tBringMob", {
+    Title = 'Arrow Bring Mob',
+    Default = false,
+    Callback = function(Value)
+        if Value then
+            if options["tArrowKA"].Value then
+                Library:Notify({
+                    Title = "Attention",
+                    Content = "You'r succeptible to get kicked if you use two different KA",
+                    Duration = 5
+                })
+            end
+            task.spawn(function()
+                while options.tBringMob.Value do 
+                    local target = findMob(true)
+                    if target then
+                        local args = {
+                            [1] = "piercing_arrow_damage",
+                            [2] = client,
+                            [3] = target:GetModelCFrame()
+                        }
+                        Handle_Initiate_S:FireServer(unpack(args))
+                        task.wait(0.2)
+                    else
+                        task.wait()
+                    end
+                end
+            end)
+        end
+    end
+})
+
+task.spawn(function()
+    while true do
+        if options.tBringMob.Value or options.tArrowKA.Value then
+            local args = {
+                [1] = "skil_ting_asd",
+                [2] = client,
+                [3] = "arrow_knock_back",
+                [4] = 5
+            }
+            Handle_Initiate_S_:InvokeServer(unpack(args))
+            task.wait(6)
+        end
+        task.wait()
+    end
+end)
 
 --[[
 
