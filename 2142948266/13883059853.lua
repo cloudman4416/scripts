@@ -694,6 +694,7 @@ Tabs["Webhook Settings"]:AddToggle("tWebHook", {
 })
 
 SaveManager:SetLibrary(Library)
+makefolder(`CloudHub/{game.PlaceId}`)
 makefolder(`CloudHub/{game.PlaceId}/{client.UserId}`)
 SaveManager:SetFolder(`CloudHub/{game.PlaceId}/{client.UserId}`)
 SaveManager:BuildConfigSection(Tabs["Settings"])
