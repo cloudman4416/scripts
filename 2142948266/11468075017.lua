@@ -303,6 +303,15 @@ Tabs["Buffs"]:AddToggle("tGodMode", {
     Default = false,
     Callback = function(Value)
         if Value then
+            if options["tArrowKA"].Value or options["tBringMob"].Value then
+                Library:Notify({
+                    Title = "Attention",
+                    Content = "Can't toggle godmode and arrow ka at the same time",
+                    Duration = 2
+                })
+                options["tGodMode"]:SetValue(false)
+                return
+            end
             task.spawn(function()
                 distance = 6
                 while options["tGodMode"].Value do
@@ -314,7 +323,7 @@ Tabs["Buffs"]:AddToggle("tGodMode", {
                         [4] = 1
                     }
                     
-                    game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(unpack(args))  
+                    Handle_Initiate_S:FireServer(unpack(args))  
                     task.wait(skillMod[skillName]["addiframefor"])
                 end
                 distance = 7
