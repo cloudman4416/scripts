@@ -1,3 +1,4 @@
+--Loader
 local GuiService = game:GetService("GuiService")
 GuiService.ErrorMessageChanged:Connect(function()
 	TeleportService:Teleport(5956785391, client)
