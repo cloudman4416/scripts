@@ -149,8 +149,8 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                             for a, b in truc:GetChildren() do
                                 b:WaitForChild(b.Name):WaitForChild("HumanoidRootPart").CFrame = target.HumanoidRootPart.CFrame
                             end
-                            local args = {
-                                [1] = {
+                            task.spawn(function()
+                                repeat dataRemoteEvent:FireServer({
                                     [1] = {
                                         ["PetPos"] = {},
                                         ["AttackType"] = "All",
@@ -158,10 +158,10 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                         ["Enemy"] = target.Name
                                     },
                                     [2] = "\5"
-                                }
-                            }
-                            dataRemoteEvent:FireServer(unpack(args))
-                            
+                                })
+                                task.wait(0.3)
+                                until truc:GetChildren()[1]:GetAttribute("Target")
+                            end)
                             while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
                                 local args = {
                                     [1] = {
@@ -268,7 +268,7 @@ Tabs["Dungeon"]:AddToggle("tJoinDungeon", {
                             repeat task.wait() until client:GetAttribute("InDungeon")
                             dataRemoteEvent:FireServer({
                                 [1] = {
-                                    ["Dungeon"] = 4493042898;
+                                    ["Dungeon"] = client.UserId;
                                     ["Event"] = "DungeonAction";
                                     ["Action"] = "Start"
                                 };
