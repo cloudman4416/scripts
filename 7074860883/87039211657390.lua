@@ -1,4 +1,4 @@
---Arise Crossover
+--Arise Crossover Main
 repeat task.wait() until game:IsLoaded()
 local Library = loadstring(game:HttpGetAsync("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
@@ -19,6 +19,7 @@ local truc = workspace.__Main.__Pets:FindFirstChild(client.UserId, true)
 local clientMobs = workspace.__Main.__Enemies.Client
 local serverMobs = workspace.__Main.__Enemies.Server
 local mobinfo = require(game:GetService("ReplicatedStorage").Indexer.EnemyInfo)
+local xtrafuncs = require(game:GetService("ReplicatedStorage").SharedModules.ExtraFunctions)
 local bla = {}
 
 for i, v in workspace.__Main.__Enemies.Server:GetChildren() do
@@ -32,14 +33,14 @@ end
 for i, v in bla do
 	--print(i)
 	for a, b in v do
-		--print(`\t{a} : {b:sub(1, -2) .. "B" .. b:sub(-1)}`)
+		--print(`\t{a} : {b:sub(1, -2) .. "" .. b:sub(-1)}`)
 	end
 end
 
 local worlds = {}
 
 for i, v in require(game:GetService("ReplicatedStorage").Indexer.MapInfo) do
-    worlds[v.Order] = workspace.__Extra.__Spawns[i].CFrame
+    worlds[v.Order] = i
 end
 
 
@@ -114,6 +115,8 @@ else
     }
 end
 
+Window.Root.Active = true
+
 local Tabs = {
     ["Auto Farm"] = Window:AddTab({Title = "Auto Farm", Icon = ""});
     ["Dungeon"] = Window:AddTab({Title = "Dungeon", Icon = ""});
@@ -138,11 +141,14 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                         if v:GetAttribute("Dead") or not v:GetAttribute("Id") or not options["tAutoMobs"].Value then
                             continue
                         end
-                        if mobinfo[v:GetAttribute("Id")].Name == options["dMobSelect"].Value and not mobinfo[v:GetAttribute("Id")].TypeG then
+                        if mobinfo[v:GetAttribute("Model")].Name == options["dMobSelect"].Value and (options["tFarmBrute"].Value or not mobinfo[v:GetAttribute("Id")].TypeG) then
                             tweento(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0)).Completed:Wait()
-                            task.wait(0.5)
+                            task.wait(0.3)
                             local target = clientMobs:WaitForChild(v.Name)
                             if not target then continue end
+                            for a, b in truc:GetChildren() do
+                                b:WaitForChild(b.Name):WaitForChild("HumanoidRootPart").CFrame = target.HumanoidRootPart.CFrame
+                            end
                             local args = {
                                 [1] = {
                                     [1] = {
@@ -155,10 +161,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                 }
                             }
                             dataRemoteEvent:FireServer(unpack(args))
-                            for a, b in truc:GetChildren() do
-                                WaitForChildWichIsA(b, "Model"):WaitForChild("HumanoidRootPart").CFrame = target.HumanoidRootPart.CFrame
-                                print("tp mob ")
-                            end
+                            
                             while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
                                 local args = {
                                     [1] = {
@@ -173,20 +176,17 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                 task.wait()
                             end
                             task.wait(0.2)
-                            local args = {
-                                [1] = {
-                                    [1] = {
-                                        ["Event"] = "EnemyDestroy",
-                                        ["Enemy"] = target.Name
-                                    },
-                                    [2] = "\4"
-                                }
-                            }
+                            client.PlayerGui.ProximityPrompts:WaitForChild("Arise", 2)
                             while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
-                                dataRemoteEvent:FireServer(unpack(args))
+                                dataRemoteEvent:FireServer({
+                                    [1] = {
+                                        ["Event"] = `Enemy{options["dMobAction"].Value}`;
+                                        ["Enemy"] = target.Name;
+                                    };
+                                    [2] = "\4"
+                                })
                                 task.wait(0.2)
                             end
-                            task.wait(0.1)
                         end
                     end
                     task.wait()
@@ -198,6 +198,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
     end
 })
 
+
 local ting = serverMobs:FindFirstChildWhichIsA("BasePart", true)
 local zone;
 if ting then 
@@ -208,11 +209,7 @@ Tabs["Auto Farm"]:AddDropdown("dMobSelect", {
     Values = getKeys(bla[zone] or {});
     Default = nil,
     Multi = false,
-    Callback = function(Options) 
-        
-    end,
 })
-
 serverMobs.DescendantAdded:Connect(function(Desc)
     pcall(function()
         if zone == tonumber(Desc.Parent.Name) then
@@ -223,12 +220,91 @@ serverMobs.DescendantAdded:Connect(function(Desc)
     end)
 end)
 
+
+Tabs["Auto Farm"]:AddDropdown("dMobAction", {
+    Title = "Action When Mob Is Killed";
+    Values = {"Capture", "Destroy"};
+    Default = "Capture";
+    Multi = false
+})
+
+
+Tabs["Auto Farm"]:AddToggle("tFarmBrute", {
+    Title = "Include Brutes";
+    Description = "Will Also Farm Brutes (Big Ennemies)";
+    Default = false;
+})
+
+--DUNGEON TAB
+local p = Tabs["Dungeon"]:AddParagraph({
+    Title = "Dungeon Status";
+    Content = `Map : {workspace.__Main.__Dungeon:FindFirstChild("Dungeon") and workspace.__Main.__Dungeon.Dungeon:GetAttribute("MapName")}\nDifficulty : {xtrafuncs.GetRankInfo(workspace.__Main.__Dungeon.Dungeon:GetAttribute("DungeonRank"))}`
+})
+
+workspace.__Main.__Dungeon.ChildAdded:Connect(function(child)
+    if child.Name == "Dungeon" then
+        p:SetDesc(`Map : {child:GetAttribute("MapName")}\nDifficulty : {xtrafuncs.GetRankInfo(child:GetAttribute("DungeonRank"))}`)
+    end
+end)
+
+Tabs["Dungeon"]:AddToggle("tJoinDungeon", {
+    Title = "Auto Join Dungeons";
+    Default = false;
+    Callback = function(Value)
+        if Value then
+            task.spawn(function()
+                while options["tJoinDungeon"].Value do
+                    local dungeon = workspace.__Main.__Dungeon:WaitForChild("Dungeon")
+                    if options["tJoinDungeon"].Value and dungeon then
+                        if options[`dDungeon{dungeon:GetAttribute("MapName")}`].Value[xtrafuncs.GetRankInfo(dungeon:GetAttribute("DungeonRank"))] then
+                            print("joining current dungeon caus")
+                            dataRemoteEvent:FireServer({
+                                [1] = {
+                                    ["Event"] = "DungeonAction";
+                                    ["Action"] = "Create";
+                                };
+                                [2] = "\n";
+                            })
+                            repeat task.wait() until client:GetAttribute("InDungeon")
+                            dataRemoteEvent:FireServer({
+                                [1] = {
+                                    ["Dungeon"] = 4493042898;
+                                    ["Event"] = "DungeonAction";
+                                    ["Action"] = "Start"
+                                };
+                                [2] = "\n";
+                            })
+                            task.wait(10)
+                        end
+                    end
+                    task.wait()
+                end
+            end)
+        end
+    end
+})
+
+for i, v in worlds do
+    Tabs["Dungeon"]:AddDropdown(`dDungeon{v}`, {
+        Title = `{v} Configuration`;
+        Values = {"E", "D", "C", "B", "A", "S", "SS"};
+        Default = {};
+        Multi = true;
+    })
+end
+
+
+
+--TELEPORT TAB
+local ranks = {}
+
 Tabs["Teleport"]:AddDropdown("dWorldSelect", {
     Title = "Select World";
-    Values = getKeys(worlds);
+    Values = worlds;
     Default = 1;
     Multi = false;
 })
+
 
 Tabs["Teleport"]:AddButton({
     Title = "Teleport";
@@ -237,11 +313,12 @@ Tabs["Teleport"]:AddButton({
         local antifall = Instance.new("BodyVelocity")
         antifall.Velocity = Vector3.new(0, 0, 0)
         antifall.Parent = client.Character.HumanoidRootPart
-        tweento(CFrame.new(worlds[options["dWorldSelect"].Value].Position) * CFrame.new(0, 5, 0)).Completed:Wait()
+        tweento(CFrame.new(workspace.__Extra.__Spawns[options["dWorldSelect"].Value].Position) * CFrame.new(0, 5, 0)).Completed:Wait()
         _conn:Disconnect()
         antifall:Destroy()
     end
 })
+
 
 SaveManager:SetLibrary(Library)
 makefolder(`CloudHub/{game.PlaceId}`)
@@ -259,31 +336,8 @@ if queue_on_teleport and not getgenv().CloudHub then
     end)
 end
 
---[[
-local args = {
-    [1] = {
-        [1] = {
-            ["Dungeon"] = 4493042898,
-            ["Event"] = "DungeonAction",
-            ["Action"] = "Create"
-        },
-        [2] = "\n"
-    }
-}
-
-game:GetService("ReplicatedStorage"):WaitForChild("BridgeNet2"):WaitForChild("dataRemoteEvent"):FireServer(unpack(args))
-
-local args = {
-    [1] = {
-        [1] = {
-            ["Dungeon"] = 4493042898,
-            ["Event"] = "DungeonAction",
-            ["Action"] = "Start"
-        },
-        [2] = "\n"
-    }
-}
-
-game:GetService("ReplicatedStorage"):WaitForChild("BridgeNet2"):WaitForChild("dataRemoteEvent"):FireServer(unpack(args))
-
-]]
+for i, v in options do
+    v:OnChanged(function()
+        SaveManager:Save(options.SaveManager_ConfigList.Value)
+    end)
+end
