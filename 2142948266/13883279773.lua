@@ -469,55 +469,6 @@ task.spawn(function()
     end
 end)
 
---[[
-
-local args = {
-    [1] = "Quest_add",
-    [2] = "Players.niatok1.PlayerGui.ExcessGuis.chairui.Holder.LocalScript",
-    [3] = 860.1893076999986,
-    [4] = {},
-    [5] = game:GetService("Players").LocalPlayer,
-    [6] = "donetargettraining"
-}
-
-Handle_Initiate_S_:InvokeServer(unpack(args))
-
-
-local args = {
-    [1] = "Quest_add",
-    [2] = "Players.niatok1.PlayerGui.ExcessGuis.Meditate_gui.Holder.LocalScript",
-    [3] = 606.4314756999956,
-    [4] = {},
-    [5] = game:GetService("Players").LocalPlayer,
-    [6] = "donedoingmeditation"
-}
-
-Handle_Initiate_S_:InvokeServer(unpack(args))
-
-local args = {
-    [1] = "Quest_add",
-    [2] = "Players.niatok1.PlayerGui.ExcessGuis.Push_Up_Gui.Holder.push_up_mat_local_script",
-    [3] = 784.9211604000011,
-    [4] = {},
-    [5] = game:GetService("Players").LocalPlayer,
-    [6] = "donepushuptraining"
-}
-
-Handle_Initiate_S_:InvokeServer(unpack(args))
-
-local args = {
-    [1] = "Quest_add",
-    [2] = "Players.niatok1.PlayerGui.ExcessGuis.thnder_gui.Holder.LocalScript",
-    [3] = 1003.2731308999937,
-    [4] = {},
-    [5] = game:GetService("Players").LocalPlayer,
-    [6] = "donelightningdodge"
-}
-
-Handle_Initiate_S_:InvokeServer(unpack(args))
-
-
-]]
 
 if getrenv then
     local tang = game:GetService("Players").LocalPlayer.PlayerGui.MainGuis.Settings.Scroll.KeybindsHolder
