@@ -1,7 +1,7 @@
 --Loader
 repeat task.wait() until game:IsLoaded()
 local client = game.Players.LocalPlayer
-repeat task.wait() until client:GetAttribute("Loaded")
+repeat task.wait() until client:GetAttribute("Playing")
 local GuiService = game:GetService("GuiService")
 GuiService.ErrorMessageChanged:Connect(function()
 	TeleportService:Teleport(87039211657390, client)
