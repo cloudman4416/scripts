@@ -1,6 +1,6 @@
 --Mugan Train
 repeat task.wait() until game:IsLoaded()
-local Library = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/cloudman4416/CloudLib/refs/heads/main/main.lua"))()
+local Library = loadstring(game:HttpGetAsync("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 local options = Library.Options
