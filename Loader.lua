@@ -30,7 +30,7 @@ pcall(function()
 		end
 	end
 
-	local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+	local Fluent = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/cloudman4416/CloudLib/refs/heads/main/main.lua"))()
 	local key = ""
 
 	local Window = Fluent:CreateWindow({
