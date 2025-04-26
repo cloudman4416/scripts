@@ -1,0 +1,22 @@
+#!/bin/sh
+
+
+HOOK=".git/hooks/pre-commit"
+
+# Rename the hook to avoid recursion
+mv "$HOOK" "$HOOK.disabled"
+
+# Get all staged files
+FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+# Commit each file separately
+for FILE in $FILES; do
+	echo $FILE
+	MSG="Update $(head -n 1 "$FILE" | sed 's/^..//')"
+	git commit -m "$MSG" "$FILE"
+done
+
+mv "$HOOK.disabled" "$HOOK"
+
+# Exit non-zero to prevent the original commit (we already committed manually)
+exit 1
