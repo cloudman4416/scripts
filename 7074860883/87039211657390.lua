@@ -306,6 +306,7 @@ Tabs["Dungeon"]:AddToggle("tJoinDungeon", {
                                     [2] = "\n"
                                 })                                
                             end
+                            task.wait(1)
                             dataRemoteEvent:FireServer({
                                 [1] = {
                                     ["Event"] = "DungeonAction";
