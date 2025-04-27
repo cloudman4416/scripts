@@ -1,11 +1,9 @@
---Ouwigahara
 local Library = loadstring(game:HttpGetAsync("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local options = Library.Options
 warn("---------------------------------")
-
 -- SERVICES
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
@@ -39,6 +37,7 @@ function tpto(p1)
         client.Character.HumanoidRootPart.CFrame = p1
     end)
 end
+
 local counter = 0
 local time = tick()
 
@@ -303,15 +302,6 @@ Tabs["Buffs"]:AddToggle("tGodMode", {
     Default = false,
     Callback = function(Value)
         if Value then
-            if options["tArrowKA"].Value or options["tBringMob"].Value then
-                Library:Notify({
-                    Title = "Attention",
-                    Content = "Can't toggle godmode and arrow ka at the same time",
-                    Duration = 2
-                })
-                options["tGodMode"]:SetValue(false)
-                return
-            end
             task.spawn(function()
                 distance = 6
                 while options["tGodMode"].Value do
@@ -323,7 +313,7 @@ Tabs["Buffs"]:AddToggle("tGodMode", {
                         [4] = 1
                     }
                     
-                    Handle_Initiate_S:FireServer(unpack(args))  
+                    game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(unpack(args))  
                     task.wait(skillMod[skillName]["addiframefor"])
                 end
                 distance = 7
@@ -346,7 +336,6 @@ Tabs["Buffs"]:AddToggle("tWarDrum", {
         end
     end
 })
-
 options["tWarDrum"]:SetValue(true)
 
 Tabs["Buffs"]:AddToggle("tSunImm", {
@@ -381,18 +370,16 @@ Tabs["Buffs"]:AddToggle("tInfBreath", {
     end
 })
 
-Window:SelectTab(1)
-
 SaveManager:SetLibrary(Library)
-makefolder(`CloudHub/{game.PlaceId}`)
-makefolder(`CloudHub/{game.PlaceId}/{client.UserId}`)
-SaveManager:SetFolder(`CloudHub/{game.PlaceId}/{client.UserId}`)
+SaveManager:SetFolder("CloudHub/babouche")
 SaveManager:BuildConfigSection(Tabs["Settings"])
+Tabs["Settings"]:AddToggle("tAutoExec", {
+    Title = "Auto Execute Script On Rejoin";
+    Default = true;
+    Callback = function(Value)
+        getgenv().AutoExecCloudy = Value
+    end
+})
 SaveManager:LoadAutoloadConfig()
 
-if queue_on_teleport and not getgenv().CloudHub then
-    getgenv().CloudHub = true
-    client.OnTeleport:Once(function(State)
-        queue_on_teleport(`loadstring(game:HttpGet("https://raw.githubusercontent.com/cloudman4416/scripts/main/Loader.lua"))()`)
-    end)
-end
+Window:SelectTab(1)
