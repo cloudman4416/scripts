@@ -52,7 +52,7 @@ local function noclip()
     end
 end
 
-local tweento = function(coords:CFrame)
+local function tweento(coords:CFrame)
     local Distance = (coords.Position - client.Character.HumanoidRootPart.Position).Magnitude
     local Speed = Distance/1000
 
@@ -63,6 +63,12 @@ local tweento = function(coords:CFrame)
 
     tween:Play()
     return tween
+end
+
+local function tpto(p1)
+    pcall(function()
+        client.Character.HumanoidRootPart.CFrame = p1
+    end)
 end
 
 local function getKeys(tbl)
@@ -335,13 +341,15 @@ Tabs["Teleport"]:AddDropdown("dWorldSelect", {
 Tabs["Teleport"]:AddButton({
     Title = "Teleport";
     Callback = function()
-        local _conn = RunService.Stepped:Connect(noclip)
-        local antifall = Instance.new("BodyVelocity")
-        antifall.Velocity = Vector3.new(0, 0, 0)
-        antifall.Parent = client.Character.HumanoidRootPart
-        tweento(CFrame.new(workspace.__Extra.__Spawns[options["dWorldSelect"].Value].Position) * CFrame.new(0, 5, 0)).Completed:Wait()
-        _conn:Disconnect()
-        antifall:Destroy()
+        client.Character.CharacterScripts.FlyingFixer.Enabled = false
+        Library:Notify({
+            Title = "Loading",
+            Content = "Preloading Map",
+            Duration = 2
+        })
+        client:RequestStreamAroundAsync(workspace.__Extra.__Spawns[options["dWorldSelect"].Value].Position)
+        tpto(CFrame.new(workspace.__Extra.__Spawns[options["dWorldSelect"].Value].Position) * CFrame.new(0, 5, 0))
+        client.Character.CharacterScripts.FlyingFixer.Enabled = true
     end
 })
 
