@@ -177,7 +177,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                                 ["Event"] = "Attack",
                                                 ["Enemy"] = target.Name
                                             },
-                                            [2] = "\5"
+                                            [2] = "\8"
                                         })
                                         task.wait(0.3)
                                     end
@@ -246,6 +246,11 @@ Tabs["Auto Farm"]:AddDropdown("dMobSelect", {
 serverMobs.DescendantAdded:Connect(function(Desc)
     pcall(function()
         if zone == tonumber(Desc.Parent.Name) then
+            return
+        end
+        if Desc.Parent == serverMobs then
+            zone = 250
+            options["dMobSelect"]:SetValues(getKeys(bla[zone] or {}))
             return
         end
         zone = tonumber(Desc.Parent.Name)
@@ -342,7 +347,6 @@ Tabs["Teleport"]:AddDropdown("dWorldSelect", {
 Tabs["Teleport"]:AddButton({
     Title = "Teleport";
     Callback = function()
-        client.Character.CharacterScripts.FlyingFixer.Enabled = false
         Library:Notify({
             Title = "Loading",
             Content = "Preloading Map",
@@ -350,7 +354,6 @@ Tabs["Teleport"]:AddButton({
         })
         client:RequestStreamAroundAsync(workspace.__Extra.__Spawns[options["dWorldSelect"].Value].Position)
         tpto(CFrame.new(workspace.__Extra.__Spawns[options["dWorldSelect"].Value].Position) * CFrame.new(0, 5, 0))
-        client.Character.CharacterScripts.FlyingFixer.Enabled = true
     end
 })
 
