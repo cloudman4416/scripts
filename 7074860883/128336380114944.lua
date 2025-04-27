@@ -123,19 +123,24 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                         for a, b in truc:GetChildren() do
                             b:WaitForChild(b.Name):WaitForChild("HumanoidRootPart").CFrame = target.HumanoidRootPart.CFrame
                         end
-                        local args = {
-                            [1] = {
-                                [1] = {
-                                    ["PetPos"] = {},
-                                    ["AttackType"] = "All",
-                                    ["Event"] = "Attack",
-                                    ["Enemy"] = target.Name
-                                },
-                                [2] = "\5"
-                            }
-                        }
-                        dataRemoteEvent:FireServer(unpack(args))
-                        
+                        task.spawn(function()
+                            while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
+                                while not truc:GetChildren()[1]:GetAttribute("Target") and options["tAutoMobs"].Value do
+                                    dataRemoteEvent:FireServer({
+                                        [1] = {
+                                            ["PetPos"] = {},
+                                            ["AttackType"] = "All",
+                                            ["Event"] = "Attack",
+                                            ["Enemy"] = target.Name
+                                        },
+                                        [2] = "\5"
+                                    })
+                                    task.wait(0.3)
+                                end
+                                task.wait()
+                            end
+                        end)
+
                         while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
                             local args = {
                                 [1] = {
