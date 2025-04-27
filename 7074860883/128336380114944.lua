@@ -155,7 +155,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                             dataRemoteEvent:FireServer(unpack(args))
                             task.wait()
                         end
-                        client.PlayerGui:FindFirstChild("ProximityPrompts", 2)
+                        client.PlayerGui:FindFirstChild("ProximityPrompts", 1)
                         if client.PlayerGui:FindFirstChild("ProximityPrompts") then
                             while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
                                 dataRemoteEvent:FireServer({
