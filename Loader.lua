@@ -1,3 +1,4 @@
+--Universal Loader
 repeat task.wait() until game:IsLoaded()
 local client = game.Players.LocalPlayer
 local VirtualUser = game:GetService("VirtualUser")
