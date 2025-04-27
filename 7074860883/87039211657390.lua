@@ -43,6 +43,7 @@ for i, v in require(game:GetService("ReplicatedStorage").Indexer.MapInfo) do
     worlds[v.Order] = i
 end
 
+client.Character.CharacterScripts.FlyingFixer.Enabled = false
 
 local function noclip()
     for i, v in pairs(client.Character:GetChildren()) do
