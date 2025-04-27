@@ -161,15 +161,15 @@ makefolder(`CloudHub/{game.PlaceId}`)
 makefolder(`CloudHub/{game.PlaceId}/{client.UserId}`)
 SaveManager:SetFolder(`CloudHub/{game.PlaceId}/{client.UserId}`)
 SaveManager:BuildConfigSection(Tabs["Settings"])
+Tabs["Settings"]:AddToggle("tAutoExec", {
+    Title = "Auto Execute Script On Rejoin";
+    Default = true;
+    Callback = function(Value)
+        getgenv().AutoExecCloudy = Value
+    end
+})
 Window:SelectTab(1)
 
 task.wait(3)
 
 SaveManager:LoadAutoloadConfig()
-
-if queue_on_teleport and not getgenv().CloudHub then
-    getgenv().CloudHub = true
-    client.OnTeleport:Once(function(State)
-        queue_on_teleport(`loadstring(game:HttpGet("https://raw.githubusercontent.com/cloudman4416/scripts/main/Loader.lua"))()`)
-    end)
-end
