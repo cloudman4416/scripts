@@ -94,3 +94,12 @@ end)
 if not succ then
     print(err)
 end
+
+if queue_on_teleport and not getgenv().CloudHub then
+    getgenv().CloudHub = true
+    client.OnTeleport:Once(function(State)
+		if getgenv().AutoExecCloudy then
+        	queue_on_teleport(`loadstring(game:HttpGet("https://raw.githubusercontent.com/cloudman4416/scripts/main/Loader.lua"))()`)
+		end
+    end)
+end
