@@ -5,7 +5,7 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local options = Library.Options
-warn("---------------------------------")
+
 -- SERVICES
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
@@ -150,17 +150,21 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                 b:WaitForChild(b.Name):WaitForChild("HumanoidRootPart").CFrame = target.HumanoidRootPart.CFrame
                             end
                             task.spawn(function()
-                                repeat dataRemoteEvent:FireServer({
-                                    [1] = {
-                                        ["PetPos"] = {},
-                                        ["AttackType"] = "All",
-                                        ["Event"] = "Attack",
-                                        ["Enemy"] = target.Name
-                                    },
-                                    [2] = "\5"
-                                })
-                                task.wait(0.3)
-                                until truc:GetChildren()[1]:GetAttribute("Target")
+                                while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
+                                    while not truc:GetChildren()[1]:GetAttribute("Target") and options["tAutoMobs"].Value do
+                                        dataRemoteEvent:FireServer({
+                                            [1] = {
+                                                ["PetPos"] = {},
+                                                ["AttackType"] = "All",
+                                                ["Event"] = "Attack",
+                                                ["Enemy"] = target.Name
+                                            },
+                                            [2] = "\5"
+                                        })
+                                        task.wait(0.3)
+                                    end
+                                    task.wait()
+                                end
                             end)
                             while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
                                 local args = {
