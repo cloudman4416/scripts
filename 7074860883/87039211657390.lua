@@ -136,6 +136,17 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                 local antifall = Instance.new("BodyVelocity")
                 antifall.Velocity = Vector3.new(0, 0, 0)
                 antifall.Parent = client.Character.HumanoidRootPart
+                for i, v in workspace.__Extra.__Interactions:GetChildren() do
+                    for a, b in v:GetChildren() do
+                        if b:FindFirstChild("Model") then
+                            for c, d in b.Model:GetChildren() do
+                                if d:GetAttribute("Type") == "ActionZone" then
+                                    d.Enabled = false
+                                end
+                            end
+                        end
+                    end
+                end
                 while options["tAutoMobs"].Value do
                     for i, v in serverMobs:GetDescendants() do
                         if v:GetAttribute("Dead") or not v:GetAttribute("Id") or not options["tAutoMobs"].Value then
@@ -197,6 +208,17 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                 end
                 _conn:Disconnect()
                 antifall:Destroy()
+                for i, v in workspace.__Extra.__Interactions:GetChildren() do
+                    for a, b in v:GetChildren() do
+                        if b:FindFirstChild("Model") then
+                            for c, d in b.Model:GetChildren() do
+                                if d:GetAttribute("Type") == "ActionZone" then
+                                    d.Enabled = true
+                                end
+                            end
+                        end
+                    end
+                end
             end)
         end
     end
@@ -242,7 +264,7 @@ Tabs["Auto Farm"]:AddToggle("tFarmBrute", {
 --DUNGEON TAB
 local p = Tabs["Dungeon"]:AddParagraph({
     Title = "Dungeon Status";
-    Content = `Map : {workspace.__Main.__Dungeon:FindFirstChild("Dungeon") and workspace.__Main.__Dungeon.Dungeon:GetAttribute("MapName")}\nDifficulty : {xtrafuncs.GetRankInfo(workspace.__Main.__Dungeon.Dungeon:GetAttribute("DungeonRank"))}`
+    Content = `Map : {workspace.__Main.__Dungeon:FindFirstChild("Dungeon") and workspace.__Main.__Dungeon.Dungeon:GetAttribute("MapName") or "Not Spawned Yet"}\nDifficulty : {xtrafuncs.GetRankInfo(workspace.__Main.__Dungeon:FindFirstChild("Dungeon") and workspace.__Main.__Dungeon.Dungeon:GetAttribute("DungeonRank") or 1)}`
 })
 
 workspace.__Main.__Dungeon.ChildAdded:Connect(function(child)
