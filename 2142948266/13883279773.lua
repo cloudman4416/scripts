@@ -469,6 +469,55 @@ task.spawn(function()
     end
 end)
 
+--[[
+
+local args = {
+    [1] = "Quest_add",
+    [2] = "Players.niatok1.PlayerGui.ExcessGuis.chairui.Holder.LocalScript",
+    [3] = 860.1893076999986,
+    [4] = {},
+    [5] = game:GetService("Players").LocalPlayer,
+    [6] = "donetargettraining"
+}
+
+Handle_Initiate_S_:InvokeServer(unpack(args))
+
+
+local args = {
+    [1] = "Quest_add",
+    [2] = "Players.niatok1.PlayerGui.ExcessGuis.Meditate_gui.Holder.LocalScript",
+    [3] = 606.4314756999956,
+    [4] = {},
+    [5] = game:GetService("Players").LocalPlayer,
+    [6] = "donedoingmeditation"
+}
+
+Handle_Initiate_S_:InvokeServer(unpack(args))
+
+local args = {
+    [1] = "Quest_add",
+    [2] = "Players.niatok1.PlayerGui.ExcessGuis.Push_Up_Gui.Holder.push_up_mat_local_script",
+    [3] = 784.9211604000011,
+    [4] = {},
+    [5] = game:GetService("Players").LocalPlayer,
+    [6] = "donepushuptraining"
+}
+
+Handle_Initiate_S_:InvokeServer(unpack(args))
+
+local args = {
+    [1] = "Quest_add",
+    [2] = "Players.niatok1.PlayerGui.ExcessGuis.thnder_gui.Holder.LocalScript",
+    [3] = 1003.2731308999937,
+    [4] = {},
+    [5] = game:GetService("Players").LocalPlayer,
+    [6] = "donelightningdodge"
+}
+
+Handle_Initiate_S_:InvokeServer(unpack(args))
+
+
+]]
 
 if getrenv then
     local tang = game:GetService("Players").LocalPlayer.PlayerGui.MainGuis.Settings.Scroll.KeybindsHolder
@@ -673,15 +722,101 @@ Tabs["Quests"]:AddToggle("tAutoWagon", {
                     }
                     Handle_Initiate_S:FireServer(unpack(args))
                     task.wait(0.2)
-                    --while playerData.Quest.Current.Value == "Deliver grandpa Wagwon's wagon" and workspace.Debree:FindFirstChild("wagonasd") do
+                    while playerData.Quest.Current.Value == "Deliver grandpa Wagwon's wagon" and workspace.Debree:FindFirstChild("wagonasd") do
                         smartTp(CFrame.new(454.2309875488281, 275.26300048828125, -2670.489013671875))
-                    --end
+                    end
                 end
                 _conn:Disconnect()
                 antifall:Destroy()
             end)
         end
     end
+})
+
+Tabs["Quests"]:AddButton({
+    Title = "Train Target";
+    Callback = function()
+        client:RequestStreamAroundAsync(Vector3.new(2857, 315, -4064))
+        workspace.Target_Training.Chair:WaitForChild("Detect_Part").Initiated:FireServer()
+        task.wait(1)
+        local args = {
+            [1] = "Quest_add",
+            [2] = `Players.{client.Name}.PlayerGui.ExcessGuis.chairui.Holder.LocalScript`,
+            [3] = os.clock(),
+            [4] = {},
+            [5] = client,
+            [6] = "donetargettraining"
+        }
+        
+        Handle_Initiate_S_:InvokeServer(unpack(args))
+        Handle_Initiate_S:FireServer("remove_item", client.PlayerGui.ExcessGuis:WaitForChild("chairui", 1))
+    end;
+})
+
+Tabs["Quests"]:AddButton({
+    Title = "Train Meditation";
+    Callback = function()
+        client:RequestStreamAroundAsync(Vector3.new(2786, 314, -3856))
+        workspace.Map.Chunk23:WaitForChild("Meditate_Mat").Initiated:FireServer()
+        task.wait(1)
+        local args = {
+            [1] = "Quest_add",
+            [2] = `Players.{client.Name}.PlayerGui.ExcessGuis.Meditate_gui.Holder.LocalScript`,
+            [3] = os.clock(),
+            [4] = {},
+            [5] = client,
+            [6] = "donedoingmeditation"
+        }
+        
+        Handle_Initiate_S_:InvokeServer(unpack(args))
+        Handle_Initiate_S:FireServer("remove_item", client.PlayerGui.ExcessGuis:WaitForChild("Meditate_gui", 1))
+    end;
+})
+
+Tabs["Quests"]:AddButton({
+    Title = "Train Pushups";
+    Callback = function()
+        client:RequestStreamAroundAsync(Vector3.new(2786, 314, -3856))
+        workspace.Map.Chunk23:WaitForChild("Push_Ups_Mat").Initiated:FireServer()
+        task.wait(1)
+        local args = {
+            [1] = "Quest_add",
+            [2] = `Players.{client.Name}.PlayerGui.ExcessGuis.Push_Up_Gui.Holder.push_up_mat_local_script`,
+            [3] = os.clock(),
+            [4] = {},
+            [5] = client,
+            [6] = "donepushuptraining"
+        }
+        
+        Handle_Initiate_S_:InvokeServer(unpack(args))
+        Handle_Initiate_S:FireServer("remove_item", client.PlayerGui.ExcessGuis:WaitForChild("Push_Up_Gui", 1))
+    end;
+})
+
+Tabs["Quests"]:AddButton({
+    Title = "Train Lighting Dodge";
+    Callback = function()
+        local _conn = RunService.Stepped:Connect(noclip)
+        local antifall = Instance.new("BodyVelocity")
+        antifall.Velocity = Vector3.new(0, 0, 0)
+        antifall.Parent = client.Character.HumanoidRootPart
+        tweento(CFrame.new(-992, 469, -2309)).Completed:Wait()
+        client.PlayerGui.ExcessGuis:WaitForChild("thnder_gui")
+        task.wait(1)
+        local args = {
+            [1] = "Quest_add",
+            [2] = `Players.{client.Name}.PlayerGui.ExcessGuis.thnder_gui.Holder.LocalScript`,
+            [3] = os.clock(),
+            [4] = {},
+            [5] = client,
+            [6] = "donelightningdodge"
+        }
+        
+        Handle_Initiate_S_:InvokeServer(unpack(args))
+        Handle_Initiate_S:FireServer("remove_item", client.PlayerGui.ExcessGuis:WaitForChild("thnder_gui", 1))
+        _conn:Disconnect()
+        antifall:Destroy()
+    end;
 })
 
 -- BUFFS
@@ -828,13 +963,13 @@ makefolder(`CloudHub/{game.PlaceId}`)
 makefolder(`CloudHub/{game.PlaceId}/{client.UserId}`)
 SaveManager:SetFolder(`CloudHub/{game.PlaceId}/{client.UserId}`)
 SaveManager:BuildConfigSection(Tabs["Settings"])
+Tabs["Settings"]:AddToggle("tAutoExec", {
+    Title = "Auto Execute Script On Rejoin";
+    Default = true;
+    Callback = function(Value)
+        getgenv().AutoExecCloudy = Value
+    end
+})
 SaveManager:LoadAutoloadConfig()
 
 Window:SelectTab(1)
-
-if queue_on_teleport and not getgenv().CloudHub then
-    getgenv().CloudHub = true
-    client.OnTeleport:Once(function(State)
-        queue_on_teleport(`loadstring(game:HttpGet("https://raw.githubusercontent.com/cloudman4416/scripts/main/Loader.lua"))()`)
-    end)
-end
