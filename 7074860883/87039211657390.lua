@@ -296,6 +296,16 @@ Tabs["Dungeon"]:AddToggle("tJoinDungeon", {
                     if options["tJoinDungeon"].Value and dungeon then
                         if options[`dDungeon{dungeon:GetAttribute("MapName")}`].Value[xtrafuncs.GetRankInfo(dungeon:GetAttribute("DungeonRank"))] then
                             print("joining current dungeon caus")
+                            if options["tBuyDungTicket"].Value then
+                                dataRemoteEvent:FireServer({
+                                    [1] = {
+                                        ["Type"] = "Gems",
+                                        ["Event"] = "DungeonAction",
+                                        ["Action"] = "BuyTicket"
+                                    },
+                                    [2] = "\n"
+                                })                                
+                            end
                             dataRemoteEvent:FireServer({
                                 [1] = {
                                     ["Event"] = "DungeonAction";
@@ -320,6 +330,11 @@ Tabs["Dungeon"]:AddToggle("tJoinDungeon", {
             end)
         end
     end
+})
+
+Tabs["Dungeon"]:AddToggle("tBuyDungTicket", {
+    Title = "Auto Buy Dungeon Ticket";
+    Default = false;
 })
 
 for i, v in worlds do
