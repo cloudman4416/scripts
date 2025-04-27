@@ -197,17 +197,19 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                 dataRemoteEvent:FireServer(unpack(args))
                                 task.wait()
                             end
-                            task.wait(0.2)
-                            client.PlayerGui.ProximityPrompts:WaitForChild("Arise", 2)
-                            while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
-                                dataRemoteEvent:FireServer({
-                                    [1] = {
-                                        ["Event"] = `Enemy{options["dMobAction"].Value}`;
-                                        ["Enemy"] = target.Name;
-                                    };
-                                    [2] = "\4"
-                                })
-                                task.wait(0.2)
+                            client.PlayerGui:WaitForChild("ProximityPrompts", 1)
+                            if client.PlayerGui:FindFirstChild("ProximityPrompts") then
+                                client.PlayerGui.ProximityPrompts:WaitForChild("Arise", 1)
+                                while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
+                                    dataRemoteEvent:FireServer({
+                                        [1] = {
+                                            ["Event"] = `Enemy{options["dMobAction"].Value}`;
+                                            ["Enemy"] = target.Name;
+                                        };
+                                        [2] = "\4"
+                                    })
+                                    task.wait(0.2)
+                                end
                             end
                         end
                     end
