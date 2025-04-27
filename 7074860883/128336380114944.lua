@@ -160,7 +160,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                             while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
                                 dataRemoteEvent:FireServer({
                                     [1] = {
-                                        ["Event"] = `Enemy{options["dMobAction"].Value}`;
+                                        ["Event"] = `Enemy{options["tCollectBoss"].Value and "Capture" or options["dMobAction"].Value}`;
                                         ["Enemy"] = target.Name;
                                     };
                                     [2] = "\4"
