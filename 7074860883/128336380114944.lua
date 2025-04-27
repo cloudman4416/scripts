@@ -20,6 +20,7 @@ local clientMobs = workspace.__Main.__Enemies.Client
 local serverMobs = workspace.__Main.__Enemies.Server
 local xtrafuncs = require(game:GetService("ReplicatedStorage").SharedModules.ExtraFunctions)
 
+client.Character.CharacterScripts.FlyingFixer.Enabled = false
 
 local function noclip()
     for i, v in pairs(client.Character:GetChildren()) do
@@ -133,7 +134,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                             ["Event"] = "Attack",
                                             ["Enemy"] = target.Name
                                         },
-                                        [2] = "\5"
+                                        [2] = "\8"
                                     })
                                     task.wait(0.3)
                                 end
