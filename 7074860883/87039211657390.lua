@@ -290,6 +290,7 @@ Tabs["Dungeon"]:AddToggle("tJoinDungeon", {
     Default = false;
     Callback = function(Value)
         if Value then
+            task.wait(1)
             task.spawn(function()
                 while options["tJoinDungeon"].Value do
                     local dungeon = workspace.__Main.__Dungeon:WaitForChild("Dungeon")
