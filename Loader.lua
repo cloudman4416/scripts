@@ -87,7 +87,7 @@ pcall(function()
 	while continu do task.wait() end
 end)
 
-local baseUrl = "https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main"
+local baseUrl = `https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main/{game.GameId}/loader.lua`
 local base64url = `https://api.github.com/repos/cloudman4416/scripts/contents/{game.GameId}/loader.lua?ref=main`
 
 if base64 and base64.decode then
@@ -98,7 +98,7 @@ if base64 and base64.decode then
     loadstring(base64decoded)()
 else
 	local succ, err = pcall(function()
-		loadstring(game:HttpGet(`{baseUrl}/{game.GameId}/loader.lua`))()
+		loadstring(game:HttpGet(baseurl))()
 	end)
 	
 	if not succ then
