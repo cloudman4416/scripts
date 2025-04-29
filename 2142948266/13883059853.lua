@@ -26,7 +26,8 @@ local distance = 15
 local places = require(game:GetService("ReplicatedStorage").Modules.Global.Map_Locaations)
 local bosses = {}
 for i, v in workspace.Mobs.Bosses:GetDescendants() do
-    if v:IsA("Configuration") and v:FindFirstChild("Npc_Configuration")then
+    if v:IsA("Configuration") and v:FindFirstChild("Npc_Configuration") then
+        print(i, v)
         local info = require(v.Npc_Configuration)
         bosses[info["Name"]] = info["Npc_Spawning"]["Spawn_Locations"][1]
     end
