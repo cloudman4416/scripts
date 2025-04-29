@@ -5,6 +5,7 @@ GuiService.ErrorMessageChanged:Connect(function()
 end)
 
 if identifyexecutor() == "Solara" then
+    local Library = loadstring(game:HttpGetAsync("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
     local modules = "https://raw.githubusercontent.com/cloudman4416/GamesModules/refs/heads/main/Project_Slayer/"
     Library:Notify({
         Title = "Attention",
