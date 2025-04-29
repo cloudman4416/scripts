@@ -164,9 +164,6 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                             task.wait(0.3)
                             local target = clientMobs:WaitForChild(v.Name)
                             if not target then continue end
-                            for a, b in truc:GetChildren() do
-                                b:WaitForChild(b.Name):WaitForChild("HumanoidRootPart").CFrame = target.HumanoidRootPart.CFrame
-                            end
                             task.spawn(function()
                                 while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
                                     while not truc:GetChildren()[1]:GetAttribute("Target") and options["tAutoMobs"].Value do
@@ -177,13 +174,16 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                                 ["Event"] = "Attack",
                                                 ["Enemy"] = target.Name
                                             },
-                                            [2] = "\8"
+                                            [2] = "\5"
                                         })
                                         task.wait(0.3)
                                     end
                                     task.wait()
                                 end
                             end)
+                            for a, b in truc:GetChildren() do
+                                b:WaitForChild(b.Name):WaitForChild("HumanoidRootPart").CFrame = target.HumanoidRootPart.CFrame
+                            end
                             while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
                                 local args = {
                                     [1] = {
@@ -373,6 +373,20 @@ Tabs["Teleport"]:AddButton({
         })
         client:RequestStreamAroundAsync(workspace.__Extra.__Spawns[options["dWorldSelect"].Value].Position)
         tpto(CFrame.new(workspace.__Extra.__Spawns[options["dWorldSelect"].Value].Position) * CFrame.new(0, 5, 0))
+    end
+})
+
+Tabs["Teleport"]:AddButton({
+    Title = "Teleport To Dedu Island";
+    Description = "Will Only Tp If Map Is Loaded";
+    Callback = function()
+        Library:Notify({
+            Title = "Loading",
+            Content = "Preloading Map",
+            Duration = 2
+        })
+        client:RequestStreamAroundAsync(Vector3.new(3928, 59, 3179))
+        tpto(CFrame.new(3928, 59, 3179) * CFrame.new(0, 5, 0))
     end
 })
 
