@@ -43,6 +43,12 @@ local tweento = function(coords:CFrame)
     return tween
 end
 
+local function tpto(p1)
+    pcall(function()
+        client.Character.HumanoidRootPart.CFrame = p1
+    end)
+end
+
 local function getKeys(tbl)
 	local keys = {}
 	for k in pairs(tbl) do
@@ -117,7 +123,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                         if v:GetAttribute("Dead") or not v:GetAttribute("Id") or not options["tAutoMobs"].Value then
                             continue
                         end
-                        tweento(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0)).Completed:Wait()
+                        tpto(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0)).Completed:Wait()
                         task.wait(0.3)
                         local target = clientMobs:WaitForChild(v.Name)
                         if not target then continue end
@@ -159,6 +165,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                         if client.PlayerGui:FindFirstChild("ProximityPrompts") then
                             client.PlayerGui.ProximityPrompts:WaitForChild("Arise", 1)
                             while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
+                                print(`Enemy{v:GetAttribute("TypeC") == "Boss" and options["tCollectBoss"].Value and "Capture" or options["dMobAction"].Value}`)
                                 dataRemoteEvent:FireServer({
                                     [1] = {
                                         ["Event"] = `Enemy{v:GetAttribute("TypeC") == "Boss" and options["tCollectBoss"].Value and "Capture" or options["dMobAction"].Value}`;
