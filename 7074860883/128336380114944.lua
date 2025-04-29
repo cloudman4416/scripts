@@ -140,7 +140,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                             ["Event"] = "Attack",
                                             ["Enemy"] = target.Name
                                         },
-                                        [2] = "\8"
+                                        [2] = "\5"
                                     })
                                     task.wait(0.3)
                                 end
