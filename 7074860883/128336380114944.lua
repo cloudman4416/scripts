@@ -168,7 +168,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                 print(`Enemy{v:GetAttribute("TypeC") == "Boss" and options["tCollectBoss"].Value and "Capture" or options["dMobAction"].Value}`)
                                 dataRemoteEvent:FireServer({
                                     [1] = {
-                                        ["Event"] = `Enemy{v:GetAttribute("TypeC") == "Boss" and options["tCollectBoss"].Value and "Capture" or options["dMobAction"].Value}`;
+                                        ["Event"] = `Enemy{v:GetAttribute("IsBoss") and options["tCollectBoss"].Value and "Capture" or options["dMobAction"].Value}`;
                                         ["Enemy"] = target.Name;
                                     };
                                     [2] = "\4"
