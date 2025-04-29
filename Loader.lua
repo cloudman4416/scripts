@@ -3,6 +3,7 @@ repeat task.wait() until game:IsLoaded()
 local client = game.Players.LocalPlayer
 local VirtualUser = game:GetService("VirtualUser")
 local TeleportService = game:GetService("TeleportService")
+local HttpService = game:GetService("HttpService")
 
 client.Idled:Connect(function()
     VirtualUser:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
@@ -87,13 +88,22 @@ pcall(function()
 end)
 
 local baseUrl = "https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main"
+local base64url = `https://api.github.com/repos/cloudman4416/scripts/contents/{game.GameId}/loader.lua?ref=main`
 
-local succ, err = pcall(function()
-    loadstring(game:HttpGet(`{baseUrl}/{game.GameId}/loader.lua`))()
-end)
+if base64 and base64.decode then
+    local response = game:HttpGet(base64url)
+    local data = HttpService:JSONDecode(response)
 
-if not succ then
-    print(err)
+    local base64decoded = base64.decode(data.content:gsub("\n", ""))
+    loadstring(base64decoded)()
+else
+	local succ, err = pcall(function()
+		loadstring(game:HttpGet(`{baseUrl}/{game.GameId}/loader.lua`))()
+	end)
+	
+	if not succ then
+		print(err)
+	end
 end
 
 if queue_on_teleport and not getgenv().CloudHub then
