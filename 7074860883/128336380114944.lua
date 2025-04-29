@@ -123,7 +123,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                         if v:GetAttribute("Dead") or not v:GetAttribute("Id") or not options["tAutoMobs"].Value then
                             continue
                         end
-                        tpto(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0)).Completed:Wait()
+                        tpto(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0))
                         task.wait(0.3)
                         local target = clientMobs:WaitForChild(v.Name)
                         if not target then continue end
