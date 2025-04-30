@@ -2,17 +2,27 @@
 repeat task.wait() until game:IsLoaded()
 local client = game.Players.LocalPlayer
 repeat task.wait() until client:GetAttribute("Playing")
+local HttpService = game:GetService("HttpService")
 local GuiService = game:GetService("GuiService")
 GuiService.ErrorMessageChanged:Connect(function()
 	TeleportService:Teleport(87039211657390, client)
 end)
 
-local baseUrl = "https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main"
+local baseUrl = `https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main/{game.GameId}/{game.PlaceId}.lua`
+local base64url = `https://api.github.com/repos/cloudman4416/scripts/contents/{game.GameId}/{game.PlaceId}.lua?ref=main`
 
-local succ, err = pcall(function()
-    loadstring(game:HttpGet(`{baseUrl}/{game.GameId}/{game.PlaceId}.lua`))()
-end)
+if base64 and base64.decode then
+    local response = game:HttpGet(base64url)
+    local data = HttpService:JSONDecode(response)
 
-if not succ then
-    print(err)
+    local base64decoded = base64.decode(data.content:gsub("\n", ""))
+    loadstring(base64decoded)()
+else
+	local succ, err = pcall(function()
+		loadstring(game:HttpGet(baseurl))()
+	end)
+	
+	if not succ then
+		print(err)
+	end
 end
