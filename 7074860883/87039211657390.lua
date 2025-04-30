@@ -20,10 +20,49 @@ local clientMobs = workspace.__Main.__Enemies.Client
 local serverMobs = workspace.__Main.__Enemies.Server
 local mobinfo = require(game:GetService("ReplicatedStorage").Indexer.EnemyInfo)
 local xtrafuncs = require(game:GetService("ReplicatedStorage").SharedModules.ExtraFunctions)
+-- VERY IMPORTANT BRIDGE THING
 local bridgenet = require(game:GetService("ReplicatedStorage").BridgeNet2)
 local pet_bridge = bridgenet.ReferenceBridge("PET_EVENT")
-local ennemy_bridge = bridgenet.ReferenceBridge("ENEMY_EVENT")
+local enemy_bridge = bridgenet.ReferenceBridge("ENEMY_EVENT")
 local general_bridge = bridgenet.ReferenceBridge("GENERAL_EVENT")
+
+local signals = {
+	EnemyDeath = Instance.new("BindableEvent");
+    EnemyArise = Instance.new("BindableEvent");
+    EnemyDestroy = Instance.new("BindableEvent");
+    Arise = Instance.new("BindableEvent");
+}
+
+enemy_bridge:Connect(function(data)
+	local s = signals[data.Event]
+	if s then
+		s:Fire(data)
+	end
+end)
+
+local function await(event, options)
+	local s = signals[event]
+	if not s then
+		warn(`{event} Is Not A Valid Event`)
+	end
+	local be = Instance.new("BindableEvent")
+	tmp = s.Event:Connect(function(data)
+		for i, v in (options or {}) do
+			if data[i] ~= v then
+				return
+			end
+		end
+		be:Fire(data)
+		tmp:Disconnect()
+	end)
+	return be.Event:Wait()
+end
+
+
+--[[
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+]]
 
 local bla = {}
 
@@ -165,13 +204,13 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                             continue
                         end
                         if mobinfo[v:GetAttribute("Model")].Name == options["dMobSelect"].Value and (options["tFarmBrute"].Value or not mobinfo[v:GetAttribute("Id")].TypeG) then
-                            tpto(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0))
+                            tweento(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0)).Completed:Wait()
                             task.wait(0.3)
                             local target = clientMobs:WaitForChild(v.Name)
                             if not target then continue end
                             task.spawn(function()
                                 while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
-                                    while not truc:GetChildren()[1]:GetAttribute("Target") and options["tAutoMobs"].Value do
+                                    while not (truc:GetChildren()[1] or Instance.new("Folder")):GetAttribute("Target") and options["tAutoMobs"].Value do
                                         pet_bridge:Fire({
                                             ["PetPos"] = {},
                                             ["AttackType"] = "All",
@@ -186,18 +225,19 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                             for a, b in truc:GetChildren() do
                                 b:WaitForChild(b.Name):WaitForChild("HumanoidRootPart").CFrame = target.HumanoidRootPart.CFrame
                             end
-                            while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
-                                ennemy_bridge:Fire({
-                                    ["Event"] = "PunchAttack",
-                                    ["Enemy"] = target.Name
-                                })
-                                task.wait()
-                            end
-                            client.PlayerGui:WaitForChild("ProximityPrompts", 1)
-                            if client.PlayerGui:FindFirstChild("ProximityPrompts") then
+                            task.spawn(function()
+                                while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
+                                    enemy_bridge:Fire({
+                                        ["Event"] = "PunchAttack",
+                                        ["Enemy"] = target.Name
+                                    })
+                                    task.wait()
+                                end
+                            end)
+                            if await("EnemyArise", {Enemy = v.Name; CanArise = True}) and options["tAutoMobs"].Value then
                                 client.PlayerGui.ProximityPrompts:WaitForChild("Arise", 1)
                                 while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
-                                    ennemy_bridge:Fire({
+                                    enemy_bridge:Fire({
                                             ["Event"] = `Enemy{options["dMobAction"].Value}`;
                                             ["Enemy"] = target.Name;
                                         })
