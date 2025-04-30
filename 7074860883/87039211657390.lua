@@ -20,7 +20,7 @@ local clientMobs = workspace.__Main.__Enemies.Client
 local serverMobs = workspace.__Main.__Enemies.Server
 local mobinfo = require(game:GetService("ReplicatedStorage").Indexer.EnemyInfo)
 local xtrafuncs = require(game:GetService("ReplicatedStorage").SharedModules.ExtraFunctions)
-local bridgenet = require(ReplicatedStorage.BridgeNet2)
+local bridgenet = require(game:GetService("ReplicatedStorage").BridgeNet2)
 local pet_bridge = bridgenet.ReferenceBridge("PET_EVENT")
 local ennemy_bridge = bridgenet.ReferenceBridge("ENEMY_EVENT")
 
