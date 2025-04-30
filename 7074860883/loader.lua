@@ -6,6 +6,7 @@ local HttpService = game:GetService("HttpService")
 local GuiService = game:GetService("GuiService")
 local TeleportService = game:GetService("TeleportService")
 GuiService.ErrorMessageChanged:Connect(function()
+	task.wait(5)
 	TeleportService:Teleport(87039211657390, client)
 end)
 
