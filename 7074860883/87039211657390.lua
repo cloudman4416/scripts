@@ -231,7 +231,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                         ["Event"] = "PunchAttack",
                                         ["Enemy"] = target.Name
                                     })
-                                    task.wait()
+                                    task.wait(0.1)
                                 end
                             end)
                             if await("EnemyArise", {Enemy = v.Name; CanArise = True}) and options["tAutoMobs"].Value then
