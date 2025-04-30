@@ -20,9 +20,10 @@ local clientMobs = workspace.__Main.__Enemies.Client
 local serverMobs = workspace.__Main.__Enemies.Server
 local mobinfo = require(game:GetService("ReplicatedStorage").Indexer.EnemyInfo)
 local xtrafuncs = require(game:GetService("ReplicatedStorage").SharedModules.ExtraFunctions)
-local bridgenet = require(game:GetService("ReplicatedStorage").BridgeNet2)
+local bridgenet = require(ReplicatedStorage.BridgeNet2)
 local pet_bridge = bridgenet.ReferenceBridge("PET_EVENT")
 local ennemy_bridge = bridgenet.ReferenceBridge("ENEMY_EVENT")
+local general_bridge = bridgenet.ReferenceBridge("GENERAL_EVENT")
 
 local bla = {}
 
@@ -292,32 +293,23 @@ Tabs["Dungeon"]:AddToggle("tJoinDungeon", {
                         if options[`dDungeon{dungeon:GetAttribute("MapName")}`].Value[xtrafuncs.GetRankInfo(dungeon:GetAttribute("DungeonRank"))] then
                             print("joining current dungeon caus")
                             if options["tBuyDungTicket"].Value then
-                                dataRemoteEvent:FireServer({
-                                    [1] = {
-                                        ["Type"] = "Gems",
-                                        ["Event"] = "DungeonAction",
-                                        ["Action"] = "BuyTicket"
-                                    },
-                                    [2] = "\n"
+                                general_bridge:Fire({
+                                    ["Type"] = "Gems";
+                                    ["Event"] = "DungeonAction";
+                                    ["Action"] = "BuyTicket";
                                 })                                
                             end
                             task.wait(1)
-                            dataRemoteEvent:FireServer({
-                                [1] = {
-                                    ["Event"] = "DungeonAction";
-                                    ["Action"] = "Create";
-                                };
-                                [2] = "\n";
+                            general_bridge:Fire({
+                                ["Event"] = "DungeonAction";
+                                ["Action"] = "Create";
                             })
                             repeat task.wait() until client:GetAttribute("InDungeon")
-                            dataRemoteEvent:FireServer({
-                                [1] = {
-                                    ["Dungeon"] = client.UserId;
-                                    ["Event"] = "DungeonAction";
-                                    ["Action"] = "Start"
-                                };
-                                [2] = "\n";
-                            })
+                            general_bridge:Fire({
+                                ["Dungeon"] = client.UserId;
+                                ["Event"] = "DungeonAction";
+                                ["Action"] = "Start";
+                                })
                             task.wait(10)
                         end
                     end
