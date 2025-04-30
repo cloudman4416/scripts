@@ -99,7 +99,7 @@ end
 
 local function tweento(coords:CFrame)
     local Distance = (coords.Position - client.Character.HumanoidRootPart.Position).Magnitude
-    local Speed = Distance/1000
+    local Speed = Distance/300
 
     local tween = TweenService:Create(client.Character.HumanoidRootPart,
         TweenInfo.new(Speed, Enum.EasingStyle.Linear),
@@ -204,7 +204,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                             continue
                         end
                         if mobinfo[v:GetAttribute("Model")].Name == options["dMobSelect"].Value and (options["tFarmBrute"].Value or not mobinfo[v:GetAttribute("Id")].TypeG) then
-                            tpto(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0))
+                            tweento(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0)).Completed:Wait()
                             task.wait(0.3)
                             local target = clientMobs:WaitForChild(v.Name)
                             if not target then continue end
