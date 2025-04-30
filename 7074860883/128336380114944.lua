@@ -140,7 +140,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                             ["Event"] = "Attack",
                                             ["Enemy"] = target.Name
                                         },
-                                        [2] = "\5"
+                                        [2] = "\6"
                                     })
                                     task.wait(0.3)
                                 end
@@ -155,7 +155,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                         ["Event"] = "PunchAttack",
                                         ["Enemy"] = target.Name
                                     },
-                                    [2] = "\4"
+                                    [2] = "\5"
                                 }
                             }
                             dataRemoteEvent:FireServer(unpack(args))
@@ -170,7 +170,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                         ["Event"] = `Enemy{v:GetAttribute("IsBoss") and options["tCollectBoss"].Value and "Capture" or options["dMobAction"].Value}`;
                                         ["Enemy"] = target.Name;
                                     };
-                                    [2] = "\4"
+                                    [2] = "\5"
                                 })
                                 task.wait(0.2)
                             end
