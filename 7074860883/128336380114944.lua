@@ -19,6 +19,9 @@ local truc = workspace.__Main.__Pets:FindFirstChild(client.UserId, true)
 local clientMobs = workspace.__Main.__Enemies.Client
 local serverMobs = workspace.__Main.__Enemies.Server
 local xtrafuncs = require(game:GetService("ReplicatedStorage").SharedModules.ExtraFunctions)
+local bridgenet = require(ReplicatedStorage.BridgeNet2)
+local pet_bridge = bridgenet.ReferenceBridge("PET_EVENT")
+local ennemy_bridge = bridgenet.ReferenceBridge("ENEMY_EVENT")
 
 client.Character.CharacterScripts.FlyingFixer.Enabled = false
 
@@ -133,14 +136,11 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                         task.spawn(function()
                             while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
                                 while not truc:GetChildren()[1]:GetAttribute("Target") and options["tAutoMobs"].Value do
-                                    dataRemoteEvent:FireServer({
-                                        [1] = {
-                                            ["PetPos"] = {},
-                                            ["AttackType"] = "All",
-                                            ["Event"] = "Attack",
-                                            ["Enemy"] = target.Name
-                                        },
-                                        [2] = "\6"
+                                    pet_bridge:Fire({
+                                        ["PetPos"] = {},
+                                        ["AttackType"] = "All",
+                                        ["Event"] = "Attack",
+                                        ["Enemy"] = target.Name
                                     })
                                     task.wait(0.3)
                                 end
@@ -149,28 +149,19 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                         end)
 
                         while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
-                            local args = {
-                                [1] = {
-                                    [1] = {
-                                        ["Event"] = "PunchAttack",
-                                        ["Enemy"] = target.Name
-                                    },
-                                    [2] = "\5"
-                                }
-                            }
-                            dataRemoteEvent:FireServer(unpack(args))
+                            ennemy_bridge:Fire({
+                                ["Event"] = "PunchAttack",
+                                ["Enemy"] = target.Name
+                            })
                             task.wait()
                         end
                         client.PlayerGui:WaitForChild("ProximityPrompts", 1)
                         if client.PlayerGui:FindFirstChild("ProximityPrompts") then
                             client.PlayerGui.ProximityPrompts:WaitForChild("Arise", (v:GetAttribute("IsBoss") and 10) or 1)
                             while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
-                                dataRemoteEvent:FireServer({
-                                    [1] = {
-                                        ["Event"] = `Enemy{v:GetAttribute("IsBoss") and options["tCollectBoss"].Value and "Capture" or options["dMobAction"].Value}`;
-                                        ["Enemy"] = target.Name;
-                                    };
-                                    [2] = "\5"
+                                ennemy_bridge:Fire({
+                                    ["Event"] = `Enemy{options["dMobAction"].Value}`;
+                                    ["Enemy"] = target.Name;
                                 })
                                 task.wait(0.2)
                             end
