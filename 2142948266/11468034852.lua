@@ -169,7 +169,7 @@ if UserInputService.TouchEnabled then
     local Frame = Instance.new("ImageButton", ScreenGui)
     Frame.Size = UDim2.fromOffset(60, 60)
     Frame.Position = UDim2.fromOffset(30, 30)
-
+    Window.Root.Active = true
     Frame.MouseButton1Click:Connect(function()
         Window:Minimize()
     end)
@@ -185,8 +185,6 @@ else
         MinimizeKey = Enum.KeyCode.RightShift -- Used when theres no MinimizeKeybind
     }
 end
-
-Window.Root.Active = true
 
 local Tabs = {
     ["Auto Farm"] = Window:AddTab({Title = "Auto Farm", Icon = ""});
