@@ -4,6 +4,7 @@ local client = game.Players.LocalPlayer
 repeat task.wait() until client:GetAttribute("Playing")
 local HttpService = game:GetService("HttpService")
 local GuiService = game:GetService("GuiService")
+local TeleportService = game:GetService("TeleportService")
 GuiService.ErrorMessageChanged:Connect(function()
 	TeleportService:Teleport(87039211657390, client)
 end)
