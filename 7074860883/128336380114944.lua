@@ -19,7 +19,7 @@ local truc = workspace.__Main.__Pets:FindFirstChild(client.UserId, true)
 local clientMobs = workspace.__Main.__Enemies.Client
 local serverMobs = workspace.__Main.__Enemies.Server
 local xtrafuncs = require(game:GetService("ReplicatedStorage").SharedModules.ExtraFunctions)
-local bridgenet = require(game:GetService("ReplicatedStorage").BridgeNet2)
+local bridgenet = require(ReplicatedStorage.BridgeNet2)
 local pet_bridge = bridgenet.ReferenceBridge("PET_EVENT")
 local ennemy_bridge = bridgenet.ReferenceBridge("ENEMY_EVENT")
 
@@ -160,7 +160,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                             client.PlayerGui.ProximityPrompts:WaitForChild("Arise", (v:GetAttribute("IsBoss") and 10) or 1)
                             while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
                                 ennemy_bridge:Fire({
-                                    ["Event"] = `Enemy{options["dMobAction"].Value}`;
+                                    ["Event"] = `Enemy{v:GetAttribute("IsBoss") and options["tCollectBoss"].Value and "Capture" or options["dMobAction"].Value}`;
                                     ["Enemy"] = target.Name;
                                 })
                                 task.wait(0.2)
