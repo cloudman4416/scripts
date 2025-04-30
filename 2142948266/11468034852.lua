@@ -186,6 +186,8 @@ else
     }
 end
 
+Window.Root.Active = true
+
 local Tabs = {
     ["Auto Farm"] = Window:AddTab({Title = "Auto Farm", Icon = ""});
     ["Kill Auras"] = Window:AddTab({Title = "Kill Auras", Icon = ""});
