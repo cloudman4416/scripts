@@ -91,18 +91,21 @@ local baseUrl = `https://raw.githubusercontent.com/cloudman4416/scripts/refs/hea
 local base64url = `https://api.github.com/repos/cloudman4416/scripts/contents/{game.GameId}/loader.lua?ref=main`
 
 if base64 and base64.decode then
-    local response = game:HttpGet(base64url)
-    local data = HttpService:JSONDecode(response)
-
-    local base64decoded = base64.decode(data.content:gsub("\n", ""))
-    loadstring(base64decoded)()
-else
 	local succ, err = pcall(function()
-		loadstring(game:HttpGet(baseurl))()
+		local response = game:HttpGet(base64url)
+		local data = HttpService:JSONDecode(response)
+
+		local base64decoded = base64.decode(data.content:gsub("\n", ""))
+		loadstring(base64decoded)()
 	end)
-	
+
 	if not succ then
-		print(err)
+		local succ, err = pcall(function()
+			loadstring(game:HttpGet(baseurl))()
+		end)
+		if not succ then
+			print(err)
+		end
 	end
 end
 
