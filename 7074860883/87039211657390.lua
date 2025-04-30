@@ -231,10 +231,11 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                         ["Event"] = "PunchAttack",
                                         ["Enemy"] = target.Name
                                     })
-                                    task.wait(0.1)
+                                    task.wait()
                                 end
                             end)
                             if await("EnemyArise", {Enemy = v.Name; CanArise = True}) and options["tAutoMobs"].Value then
+                                client.PlayerGui:WaitForChild("ProximityPrompts", 1)
                                 client.PlayerGui.ProximityPrompts:WaitForChild("Arise", 1)
                                 while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
                                     enemy_bridge:Fire({
