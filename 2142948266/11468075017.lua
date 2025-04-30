@@ -96,6 +96,8 @@ local Window = Library:CreateWindow{
     MinimizeKey = Enum.KeyCode.RightControl -- Used when theres no MinimizeKeybind
 }
 
+Window.Root.Active = true
+
 local Tabs = {
     ["Auto Farm"] = Window:AddTab({Title = "Auto Farm", Icon = "house"});
     ["Kill Auras"] = Window:AddTab({Title = "Kill Auras", Icon = ""});
