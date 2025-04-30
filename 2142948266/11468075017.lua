@@ -9,6 +9,7 @@ warn("---------------------------------")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
 
 -- VARS
 local client = Players.LocalPlayer
@@ -86,16 +87,38 @@ end
 --local SaveManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/dawid-scripts/Fluent-Renewed/master/Addons/SaveManager.luau"))()
 --local InterfaceManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/dawid-scripts/Fluent-Renewed/master/Addons/InterfaceManager.luau"))()
 
-local Window = Library:CreateWindow{
-    Title = `Cloudhub | Project Slayer`,
-    TabWidth = 160,
-    Size = UDim2.fromOffset(830, 525),
-    Resize = true, -- Resize this ^ Size according to a 1920x1080 screen, good for mobile users but may look weird on some devices
-    MinSize = Vector2.new(470, 380),
-    Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
-    Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.RightControl -- Used when theres no MinimizeKeybind
-}
+local Window;
+if UserInputService.TouchEnabled then
+    Window = Library:CreateWindow{
+        Title = `Cloudhub | Project Slayer`,
+        TabWidth = 160,
+        Size = UDim2.fromOffset(600, 300);
+        Resize = true, -- Resize this ^ Size according to a 1920x1080 screen, good for mobile users but may look weird on some devices
+        MinSize = Vector2.new(235, 190),
+        Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
+        Theme = "Dark",
+        MinimizeKey = Enum.KeyCode.RightShift -- Used when theres no MinimizeKeybind
+    }
+    local ScreenGui = Instance.new("ScreenGui", gethui())
+    local Frame = Instance.new("ImageButton", ScreenGui)
+    Frame.Size = UDim2.fromOffset(60, 60)
+    Frame.Position = UDim2.fromOffset(30, 30)
+    Window.Root.Active = true
+    Frame.MouseButton1Click:Connect(function()
+        Window:Minimize()
+    end)
+else
+    Window = Library:CreateWindow{
+        Title = `Cloudhub | Project Slayer`,
+        TabWidth = 160,
+        Size = UDim2.fromOffset(830, 525),
+        Resize = true, -- Resize this ^ Size according to a 1920x1080 screen, good for mobile users but may look weird on some devices
+        MinSize = Vector2.new(470, 380),
+        Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
+        Theme = "Dark",
+        MinimizeKey = Enum.KeyCode.RightShift -- Used when theres no MinimizeKeybind
+    }
+end
 
 Window.Root.Active = true
 
