@@ -20,6 +20,10 @@ local clientMobs = workspace.__Main.__Enemies.Client
 local serverMobs = workspace.__Main.__Enemies.Server
 local mobinfo = require(game:GetService("ReplicatedStorage").Indexer.EnemyInfo)
 local xtrafuncs = require(game:GetService("ReplicatedStorage").SharedModules.ExtraFunctions)
+local bridgenet = require(ReplicatedStorage.BridgeNet2)
+local pet_bridge = bridgenet.ReferenceBridge("PET_EVENT")
+local ennemy_bridge = bridgenet.ReferenceBridge("ENEMY_EVENT")
+
 local bla = {}
 
 for i, v in workspace.__Main.__Enemies.Server:GetChildren() do
@@ -167,14 +171,11 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                             task.spawn(function()
                                 while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
                                     while not truc:GetChildren()[1]:GetAttribute("Target") and options["tAutoMobs"].Value do
-                                        dataRemoteEvent:FireServer({
-                                            [1] = {
-                                                ["PetPos"] = {},
-                                                ["AttackType"] = "All",
-                                                ["Event"] = "Attack",
-                                                ["Enemy"] = target.Name
-                                            },
-                                            [2] = "\6"
+                                        pet_bridge:Fire({
+                                            ["PetPos"] = {},
+                                            ["AttackType"] = "All",
+                                            ["Event"] = "Attack",
+                                            ["Enemy"] = target.Name
                                         })
                                         task.wait(0.3)
                                     end
@@ -185,29 +186,20 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                 b:WaitForChild(b.Name):WaitForChild("HumanoidRootPart").CFrame = target.HumanoidRootPart.CFrame
                             end
                             while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
-                                local args = {
-                                    [1] = {
-                                        [1] = {
-                                            ["Event"] = "PunchAttack",
-                                            ["Enemy"] = target.Name
-                                        },
-                                        [2] = "\5"
-                                    }
-                                }
-                                dataRemoteEvent:FireServer(unpack(args))
+                                ennemy_bridge:FireServer({
+                                    ["Event"] = "PunchAttack",
+                                    ["Enemy"] = target.Name
+                                })
                                 task.wait()
                             end
                             client.PlayerGui:WaitForChild("ProximityPrompts", 1)
                             if client.PlayerGui:FindFirstChild("ProximityPrompts") then
                                 client.PlayerGui.ProximityPrompts:WaitForChild("Arise", 1)
                                 while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
-                                    dataRemoteEvent:FireServer({
-                                        [1] = {
+                                    ennemy_bridge:FireServer({
                                             ["Event"] = `Enemy{options["dMobAction"].Value}`;
                                             ["Enemy"] = target.Name;
-                                        };
-                                        [2] = "\5"
-                                    })
+                                        })
                                     task.wait(0.2)
                                 end
                             end
