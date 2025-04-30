@@ -35,7 +35,7 @@ end
 
 local tweento = function(coords:CFrame)
     local Distance = (coords.Position - client.Character.HumanoidRootPart.Position).Magnitude
-    local Speed = Distance/1000
+    local Speed = Distance/300
 
     local tween = TweenService:Create(client.Character.HumanoidRootPart,
         TweenInfo.new(Speed, Enum.EasingStyle.Linear),
@@ -126,7 +126,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                         if v:GetAttribute("Dead") or not v:GetAttribute("Id") or not options["tAutoMobs"].Value then
                             continue
                         end
-                        tpto(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0))
+                        tweento(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0)).Completed:Wait()
                         task.wait(0.3)
                         local target = clientMobs:WaitForChild(v.Name)
                         if not target then continue end
@@ -153,7 +153,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                 ["Event"] = "PunchAttack",
                                 ["Enemy"] = target.Name
                             })
-                            task.wait()
+                            task.wait(0.1)
                         end
                         client.PlayerGui:WaitForChild("ProximityPrompts", 1)
                         if client.PlayerGui:FindFirstChild("ProximityPrompts") then
