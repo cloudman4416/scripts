@@ -234,16 +234,14 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                 for a, b in truc:GetChildren() do
                                     b:WaitForChild(b.Name):WaitForChild("HumanoidRootPart").CFrame = target.HumanoidRootPart.CFrame
                                 end
-                                task.spawn(function()
-                                    while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
-                                        enemy_bridge:Fire({
-                                            ["Event"] = "PunchAttack",
-                                            ["Enemy"] = target.Name
-                                        })
-                                        task.wait()
-                                    end
-                                end)
-                                if await("EnemyArise", {Enemy = v.Name; CanArise = True}) and options["tAutoMobs"].Value then
+                                while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
+                                    enemy_bridge:Fire({
+                                        ["Event"] = "PunchAttack",
+                                        ["Enemy"] = target.Name
+                                    })
+                                    task.wait()
+                                end
+                                if await("EnemyArise", {Enemy = v.Name}, 2)["CanArise"] and options["tAutoMobs"].Value then
                                     client.PlayerGui:WaitForChild("ProximityPrompts", 1)
                                     client.PlayerGui.ProximityPrompts:WaitForChild("Arise", 1)
                                     while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
