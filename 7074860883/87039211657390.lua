@@ -150,9 +150,15 @@ if UserInputService.TouchEnabled then
     Frame.Size = UDim2.fromOffset(60, 60)
     Frame.Position = UDim2.fromOffset(30, 30)
 
-    Frame.MouseButton1Click:Connect(function()
+    local conn = Frame.MouseButton1Click:Connect(function()
         Window:Minimize()
     end)
+
+    repeat task.wait()
+    until Library.Unloaded
+
+    Frame:Destroy()
+    conn:Disconnect()
 else
     Window = Library:CreateWindow{
         Title = `Cloudhub | Arise Crossover`,
