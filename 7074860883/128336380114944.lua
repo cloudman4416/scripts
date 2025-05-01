@@ -190,7 +190,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                             end
                             task.spawn(function()
                                 while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
-                                    while not truc:GetChildren()[1]:GetAttribute("Target") and options["tAutoMobs"].Value do
+                                    while not (truc:GetChildren()[1] or Instance.new("Folder")):GetAttribute("Target") and options["tAutoMobs"].Value do
                                         pet_bridge:Fire({
                                             ["PetPos"] = {},
                                             ["AttackType"] = "All",
