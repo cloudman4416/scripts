@@ -11,16 +11,17 @@ local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- VARS
 local client = Players.LocalPlayer
-local dataRemoteEvent = game:GetService("ReplicatedStorage"):WaitForChild("BridgeNet2"):WaitForChild("dataRemoteEvent")
+local dataRemoteEvent = ReplicatedStorage:WaitForChild("BridgeNet2"):WaitForChild("dataRemoteEvent")
 local truc = workspace.__Main.__Pets:FindFirstChild(client.UserId, true)
 local clientMobs = workspace.__Main.__Enemies.Client
 local serverMobs = workspace.__Main.__Enemies.Server
-local xtrafuncs = require(game:GetService("ReplicatedStorage").SharedModules.ExtraFunctions)
+local xtrafuncs = require(ReplicatedStorage.SharedModules.ExtraFunctions)
 -- VERY IMPORTANT BRIDGE THING
-local bridgenet = require(game:GetService("ReplicatedStorage").BridgeNet2)
+local bridgenet = require(ReplicatedStorage.BridgeNet2)
 local pet_bridge = bridgenet.ReferenceBridge("PET_EVENT")
 local enemy_bridge = bridgenet.ReferenceBridge("ENEMY_EVENT")
 local general_bridge = bridgenet.ReferenceBridge("GENERAL_EVENT")
@@ -210,7 +211,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                 })
                                 task.wait()
                             end
-                            if await("EnemyArise", {Enemy = v.Name}, 1)["CanArise"] and options["tAutoMobs"].Value then
+                            if ReplicatedStorage:GetAttribute("MaxGDRoom") ~= 21 await("EnemyArise", {Enemy = v.Name}, 1)["CanArise"] and options["tAutoMobs"].Value then
                                 client.PlayerGui:WaitForChild("ProximityPrompts", 1)
                                 client.PlayerGui.ProximityPrompts:WaitForChild("Arise", 1)
                                 while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
