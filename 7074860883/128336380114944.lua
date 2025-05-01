@@ -125,7 +125,7 @@ if UserInputService.TouchEnabled then
     local Frame = Instance.new("ImageButton", ScreenGui)
     Frame.Size = UDim2.fromOffset(60, 60)
     Frame.Position = UDim2.fromOffset(30, 30)
-    
+
     local conn = Frame.MouseButton1Click:Connect(function()
         Window:Minimize()
     end)
@@ -198,7 +198,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                             end)
 
                             while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
-                                ennemy_bridge:Fire({
+                                enemy_bridge:Fire({
                                     ["Event"] = "PunchAttack",
                                     ["Enemy"] = target.Name
                                 })
