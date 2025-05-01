@@ -97,10 +97,13 @@ if base64 and base64.decode then
 
 		local base64decoded = base64.decode(data.content:gsub("\n", ""))
 		loadstring(base64decoded)()
+		print("decoded")
 	end)
 
 	if not succ then
 		local succ, err = pcall(function()
+			print(baseUrl)
+			print(game:HttpGet(baseUrl))
 			loadstring(game:HttpGet(baseUrl))()
 		end)
 		if not succ then
