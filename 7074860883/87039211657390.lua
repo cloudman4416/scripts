@@ -154,11 +154,13 @@ if UserInputService.TouchEnabled then
         Window:Minimize()
     end)
 
-    repeat task.wait()
-    until Library.Unloaded
+    task.spawn(function()
+        repeat task.wait()
+        until Library.Unloaded
 
-    Frame:Destroy()
-    conn:Disconnect()
+        Frame:Destroy()
+        conn:Disconnect()
+    end)
 else
     Window = Library:CreateWindow{
         Title = `Cloudhub | Arise Crossover`,
