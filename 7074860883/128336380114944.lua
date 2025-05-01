@@ -39,7 +39,7 @@ enemy_bridge:Connect(function(data)
 	end
 end)
 
-local function await(event, options)
+local function await(event, options, timeout)
 	local s = signals[event]
 	if not s then
 		warn(`{event} Is Not A Valid Event`)
@@ -54,6 +54,12 @@ local function await(event, options)
 		be:Fire(data)
 		tmp:Disconnect()
 	end)
+    if timeout then
+        task.delay(timeout, function()
+            tmp:Disconnect()
+            be:Fire({})
+        end)
+    end
 	return be.Event:Wait()
 end
 
@@ -204,7 +210,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                 })
                                 task.wait()
                             end
-                            if await("EnemyArise", {Enemy = v.Name})["CanArise"] and options["tAutoMobs"].Value then
+                            if await("EnemyArise", {Enemy = v.Name}, 1)["CanArise"] and options["tAutoMobs"].Value then
                                 client.PlayerGui:WaitForChild("ProximityPrompts", 1)
                                 client.PlayerGui.ProximityPrompts:WaitForChild("Arise", 1)
                                 while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
