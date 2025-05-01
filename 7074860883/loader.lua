@@ -21,7 +21,7 @@ if base64 and base64.decode then
     loadstring(base64decoded)()
 else
 	local succ, err = pcall(function()
-		loadstring(game:HttpGet(baseurl))()
+		loadstring(game:HttpGet(baseUrl))()
 	end)
 	
 	if not succ then
