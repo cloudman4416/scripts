@@ -19,9 +19,49 @@ local truc = workspace.__Main.__Pets:FindFirstChild(client.UserId, true)
 local clientMobs = workspace.__Main.__Enemies.Client
 local serverMobs = workspace.__Main.__Enemies.Server
 local xtrafuncs = require(game:GetService("ReplicatedStorage").SharedModules.ExtraFunctions)
+-- VERY IMPORTANT BRIDGE THING
 local bridgenet = require(game:GetService("ReplicatedStorage").BridgeNet2)
 local pet_bridge = bridgenet.ReferenceBridge("PET_EVENT")
-local ennemy_bridge = bridgenet.ReferenceBridge("ENEMY_EVENT")
+local enemy_bridge = bridgenet.ReferenceBridge("ENEMY_EVENT")
+local general_bridge = bridgenet.ReferenceBridge("GENERAL_EVENT")
+
+local signals = {
+	EnemyDeath = Instance.new("BindableEvent");
+    EnemyArise = Instance.new("BindableEvent");
+    EnemyDestroy = Instance.new("BindableEvent");
+    Arise = Instance.new("BindableEvent");
+}
+
+enemy_bridge:Connect(function(data)
+	local s = signals[data.Event]
+	if s then
+		s:Fire(data)
+	end
+end)
+
+local function await(event, options)
+	local s = signals[event]
+	if not s then
+		warn(`{event} Is Not A Valid Event`)
+	end
+	local be = Instance.new("BindableEvent")
+	tmp = s.Event:Connect(function(data)
+		for i, v in (options or {}) do
+			if data[i] ~= v then
+				return
+			end
+		end
+		be:Fire(data)
+		tmp:Disconnect()
+	end)
+	return be.Event:Wait()
+end
+
+
+--[[
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+]]
 
 client.Character.CharacterScripts.FlyingFixer.Enabled = false
 
@@ -121,54 +161,61 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                 local antifall = Instance.new("BodyVelocity")
                 antifall.Velocity = Vector3.new(0, 0, 0)
                 antifall.Parent = client.Character.HumanoidRootPart
-                while options["tAutoMobs"].Value do
-                    for i, v in serverMobs:GetDescendants() do
-                        if v:GetAttribute("Dead") or not v:GetAttribute("Id") or not options["tAutoMobs"].Value then
-                            continue
-                        end
-                        tweento(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0)).Completed:Wait()
-                        task.wait(0.3)
-                        local target = clientMobs:WaitForChild(v.Name)
-                        if not target then continue end
-                        for a, b in truc:GetChildren() do
-                            b:WaitForChild(b.Name):WaitForChild("HumanoidRootPart").CFrame = target.HumanoidRootPart.CFrame
-                        end
-                        task.spawn(function()
-                            while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
-                                while not truc:GetChildren()[1]:GetAttribute("Target") and options["tAutoMobs"].Value do
-                                    pet_bridge:Fire({
-                                        ["PetPos"] = {},
-                                        ["AttackType"] = "All",
-                                        ["Event"] = "Attack",
-                                        ["Enemy"] = target.Name
-                                    })
-                                    task.wait(0.3)
+                local cr = coroutine.create(function()
+                    while options["tAutoMobs"].Value do
+                        for i, v in serverMobs:GetDescendants() do
+                            if v:GetAttribute("Dead") or not v:GetAttribute("Id") or not options["tAutoMobs"].Value then
+                                continue
+                            end
+                            tweento(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0)).Completed:Wait()
+                            task.wait(0.3)
+                            local target = clientMobs:WaitForChild(v.Name)
+                            if not target then continue end
+                            for a, b in truc:GetChildren() do
+                                b:WaitForChild(b.Name):WaitForChild("HumanoidRootPart").CFrame = target.HumanoidRootPart.CFrame
+                            end
+                            task.spawn(function()
+                                while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
+                                    while not truc:GetChildren()[1]:GetAttribute("Target") and options["tAutoMobs"].Value do
+                                        pet_bridge:Fire({
+                                            ["PetPos"] = {},
+                                            ["AttackType"] = "All",
+                                            ["Event"] = "Attack",
+                                            ["Enemy"] = target.Name
+                                        })
+                                        task.wait(0.3)
+                                    end
+                                    task.wait()
                                 end
+                            end)
+
+                            while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
+                                ennemy_bridge:Fire({
+                                    ["Event"] = "PunchAttack",
+                                    ["Enemy"] = target.Name
+                                })
                                 task.wait()
                             end
-                        end)
-
-                        while not v:GetAttribute("Dead") and options["tAutoMobs"].Value do
-                            ennemy_bridge:Fire({
-                                ["Event"] = "PunchAttack",
-                                ["Enemy"] = target.Name
-                            })
-                            task.wait(0.1)
-                        end
-                        client.PlayerGui:WaitForChild("ProximityPrompts", 1)
-                        if client.PlayerGui:FindFirstChild("ProximityPrompts") then
-                            client.PlayerGui.ProximityPrompts:WaitForChild("Arise", (v:GetAttribute("IsBoss") and 10) or 1)
-                            while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
-                                ennemy_bridge:Fire({
-                                    ["Event"] = `Enemy{v:GetAttribute("IsBoss") and options["tCollectBoss"].Value and "Capture" or options["dMobAction"].Value}`;
-                                    ["Enemy"] = target.Name;
-                                })
-                                task.wait(0.2)
+                            if await("EnemyArise", {Enemy = v.Name; CanArise = True}) and options["tAutoMobs"].Value then
+                                client.PlayerGui:WaitForChild("ProximityPrompts", 1)
+                                client.PlayerGui.ProximityPrompts:WaitForChild("Arise", 1)
+                                while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
+                                    enemy_bridge:Fire({
+                                            ["Event"] = `Enemy{options["dMobAction"].Value}`;
+                                            ["Enemy"] = target.Name;
+                                        })
+                                    task.wait(0.3)
+                                end
                             end
                         end
+                        task.wait()
                     end
+                end)
+                coroutine.resume(cr)
+                while options["tAutoMobs"].Value do
                     task.wait()
                 end
+                coroutine.close(cr)
                 _conn:Disconnect()
                 antifall:Destroy()
             end)
