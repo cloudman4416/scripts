@@ -11,7 +11,7 @@ client.Idled:Connect(function()
     VirtualUser:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
 end)
 
-pcall(function()
+--[[pcall(function()
 	makefolder("CloudHub")
 	local potKey = "CloudHub/key"
 	local continu = true
@@ -85,7 +85,7 @@ pcall(function()
 
 	Window:SelectTab(1)
 	while continu do task.wait() end
-end)
+end)]]
 
 local baseUrl = `https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main/{game.GameId}/loader.lua`
 local base64url = `https://api.github.com/repos/cloudman4416/scripts/contents/{game.GameId}/loader.lua?ref=main`
