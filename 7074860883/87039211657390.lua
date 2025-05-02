@@ -179,6 +179,7 @@ Window.Root.Active = true
 local Tabs = {
     ["Auto Farm"] = Window:AddTab({Title = "Auto Farm", Icon = ""});
     ["Dungeon"] = Window:AddTab({Title = "Dungeon", Icon = ""});
+    ["Castle"] = Window:AddTab({Title = "Castle", Icon = ""});
     ["Teleport"] = Window:AddTab({Title = "Teleport", Icon = ""});
     ["Webhook Settings"] = Window:AddTab({Title = "Webhook settings", Icon = ""});
     ["Settings"] = Window:AddTab({Title = "Settings", Icon = "settings"});
@@ -320,6 +321,51 @@ Tabs["Auto Farm"]:AddToggle("tFarmBrute", {
     Title = "Include Brutes";
     Description = "Will Also Farm Brutes (Big Ennemies)";
     Default = false;
+})
+
+-- CASTLE
+
+Tabs["Castle"]:AddDropdown("dCastleWeapon", {
+    Title = "Equip This Weapon For Castle";
+    Values = {};
+    Default = nil;
+})
+
+Tabs["Castle"]:AddButton({
+    Title = "Select Current Weapon";
+    Callback = function()
+        options["dCastleWeapon"]:SetValues({client.leaderstats.Equips:GetAttribute("Weapon")})
+        options["dCastleWeapon"]:SetValue(client.leaderstats.Equips:GetAttribute("Weapon"))
+    end
+})
+
+Tabs["Castle"]:AddToggle("tAutoCastle", {
+    Title = "Auto Join Castle";
+    Default = false;
+    Callback = function(Value)
+        if Value then
+            task.spawn(function()
+                while options["tAutoCastle"].Value do
+                    client:RequestStreamAroundAsync(Vector3.new(578, 28, 134))
+                    local castle = workspace.__Main.__Dungeon:WaitForChild("Castle", 10)
+                    if castle then
+                        if options["dCastleWeapon"].Value then
+                            general_bridge:Fire({
+                                ["Name"] = options["dCastleWeapon"].Value;
+                                ["Event"] = "WeaponAction";
+                                ["Action"] = "Equip";
+                            })
+                        end
+                        general_bridge:Fire({
+                            ["Check"] = false;
+                            ["Event"] = "CastleAction";
+                            ["Action"] = "Join";
+                        })
+                    end
+                end
+            end)
+        end
+    end
 })
 
 --DUNGEON TAB
