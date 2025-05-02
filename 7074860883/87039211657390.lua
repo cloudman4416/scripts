@@ -345,9 +345,10 @@ Tabs["Castle"]:AddToggle("tAutoCastle", {
     Callback = function(Value)
         if Value then
             task.spawn(function()
+                workspace.__Main.__World["World 1"].ModelStreamingMode = "Persistent"
                 while options["tAutoCastle"].Value do
                     client:RequestStreamAroundAsync(Vector3.new(578, 28, 134))
-                    local castle = workspace.__Main.__Dungeon:WaitForChild("Castle", 10)
+                    local castle = workspace.__Main.__Dungeon:WaitForChild("Castle", 2)
                     if castle then
                         if options["dCastleWeapon"].Value then
                             general_bridge:Fire({
@@ -363,6 +364,7 @@ Tabs["Castle"]:AddToggle("tAutoCastle", {
                         })
                     end
                 end
+                workspace.__Main.__World["World 1"].ModelStreamingMode = "Default"
             end)
         end
     end
