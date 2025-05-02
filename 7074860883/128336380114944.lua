@@ -216,7 +216,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                 client.PlayerGui.ProximityPrompts:WaitForChild("Arise", 1)
                                 while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
                                     enemy_bridge:Fire({
-                                            ["Event"] = `Enemy{options["dMobAction"].Value}`;
+                                            ["Event"] = `Enemy{options["tCollectBoss"].Value and v:GetAttribute("IsBoss") and "Capture" or options["dMobAction"].Value}`;
                                             ["Enemy"] = target.Name;
                                         })
                                     task.wait(0.3)
