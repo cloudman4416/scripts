@@ -390,7 +390,7 @@ Tabs["Dungeon"]:AddToggle("tJoinDungeon", {
             task.wait(1)
             task.spawn(function()
                 while options["tJoinDungeon"].Value do
-                    local dungeon = workspace.__Main.__Dungeon:WaitForChild("Dungeon")
+                    local dungeon = workspace.__Main.__Dungeon:WaitForChild("Dungeon", math.huge)
                     if options["tJoinDungeon"].Value and dungeon then
                         if options[`dDungeon{dungeon:GetAttribute("MapName")}`].Value[xtrafuncs.GetRankInfo(dungeon:GetAttribute("DungeonRank"))] then
                             print("joining current dungeon caus")
