@@ -219,6 +219,9 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                             ["Event"] = `Enemy{options["tCollectBoss"].Value and v:GetAttribute("IsBoss") and "Capture" or options["dMobAction"].Value}`;
                                             ["Enemy"] = target.Name;
                                         })
+                                    if options["tCollectBoss"].Value and v:GetAttribute("IsBoss") then
+                                        print("collected")
+                                    end
                                     task.wait(0.3)
                                 end
                             end
