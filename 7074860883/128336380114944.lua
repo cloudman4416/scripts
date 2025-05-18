@@ -211,7 +211,7 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                 })
                                 task.wait()
                             end
-                            if ReplicatedStorage:GetAttribute("MaxDGRoom") ~= 21 and await("EnemyArise", {Enemy = v.Name}, 1)["CanArise"] and options["tAutoMobs"].Value then
+                            if await("EnemyArise", {Enemy = v.Name}, 1)["CanArise"] and options["tAutoMobs"].Value then
                                 client.PlayerGui:WaitForChild("ProximityPrompts", 1)
                                 client.PlayerGui.ProximityPrompts:WaitForChild("Arise", 1)
                                 while client.PlayerGui.ProximityPrompts:FindFirstChild("Arise") and options["tAutoMobs"].Value do
