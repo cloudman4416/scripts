@@ -535,5 +535,12 @@ Tabs["Settings"]:AddToggle("tAutoExec", {
         getgenv().AutoExecCloudy = Value
     end
 })
+SaveManager:LoadAutoloadConfig()
 
 Window:SelectTab(1)
+
+for i, v in options do
+    v:OnChanged(function()
+        SaveManager:Save(options.SaveManager_ConfigList.Value)
+    end)
+end
