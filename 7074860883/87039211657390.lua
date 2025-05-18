@@ -20,6 +20,7 @@ local clientMobs = workspace.__Main.__Enemies.Client
 local serverMobs = workspace.__Main.__Enemies.Server
 local mobinfo = require(game:GetService("ReplicatedStorage").Indexer.EnemyInfo)
 local xtrafuncs = require(game:GetService("ReplicatedStorage").SharedModules.ExtraFunctions)
+local mapinfo = require(game:GetService("ReplicatedStorage").Indexer.MapInfo)
 -- VERY IMPORTANT BRIDGE THING
 local bridgenet = require(game:GetService("ReplicatedStorage").BridgeNet2)
 local pet_bridge = bridgenet.ReferenceBridge("PET_EVENT")
@@ -40,7 +41,7 @@ enemy_bridge:Connect(function(data)
 	end
 end)
 
-local function await(event, options)
+local function await(event, options, timeout)
 	local s = signals[event]
 	if not s then
 		warn(`{event} Is Not A Valid Event`)
@@ -55,6 +56,12 @@ local function await(event, options)
 		be:Fire(data)
 		tmp:Disconnect()
 	end)
+    if timeout then
+        task.delay(timeout, function()
+            tmp:Disconnect()
+            be:Fire({})
+        end)
+    end
 	return be.Event:Wait()
 end
 
@@ -83,7 +90,7 @@ end
 
 local worlds = {}
 
-for i, v in require(game:GetService("ReplicatedStorage").Indexer.MapInfo) do
+for i, v in mapinfo do
     worlds[v.Order] = i
 end
 
@@ -124,11 +131,16 @@ local function getKeys(tbl)
 	return keys
 end
 
-local function WaitForChildWichIsA(parent, class)
-    while not parent:FindFirstChildWhichIsA(class) do
-        task.wait()
-    end
-    return parent:FindFirstChildWhichIsA(class)
+local function foreach(tab, func)
+    local ret = {}
+	for i, v in tab do
+		func(i, v, ret)
+	end
+	return ret
+end
+
+xtrafuncs.GetIslandName = function(id)
+    return mapinfo[id].Name
 end
 
 --GUI ANNOYING PART
@@ -179,6 +191,7 @@ Window.Root.Active = true
 local Tabs = {
     ["Auto Farm"] = Window:AddTab({Title = "Auto Farm", Icon = ""});
     ["Dungeon"] = Window:AddTab({Title = "Dungeon", Icon = ""});
+    ["Rules"] = Window:AddTab({Title = "Rules", Icon = ""});
     ["Castle"] = Window:AddTab({Title = "Castle", Icon = ""});
     ["Teleport"] = Window:AddTab({Title = "Teleport", Icon = ""});
     ["Webhook Settings"] = Window:AddTab({Title = "Webhook settings", Icon = ""});
@@ -214,8 +227,8 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                 continue
                             end
                             if mobinfo[v:GetAttribute("Model")].Name == options["dMobSelect"].Value and (options["tFarmBrute"].Value or not mobinfo[v:GetAttribute("Id")].TypeG) then
-                                tweento(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0)).Completed:Wait()
-                                task.wait(0.3)
+                                --tweento(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0)).Completed:Wait()
+                                tpto(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0))
                                 local target = clientMobs:WaitForChild(v.Name, 2)
                                 if not target then continue end
                                 task.spawn(function()
@@ -323,53 +336,6 @@ Tabs["Auto Farm"]:AddToggle("tFarmBrute", {
     Default = false;
 })
 
--- CASTLE
-
-Tabs["Castle"]:AddDropdown("dCastleWeapon", {
-    Title = "Equip This Weapon For Castle";
-    Values = {};
-    Default = nil;
-})
-
-Tabs["Castle"]:AddButton({
-    Title = "Select Current Weapon";
-    Callback = function()
-        options["dCastleWeapon"]:SetValues({client.leaderstats.Equips:GetAttribute("Weapon")})
-        options["dCastleWeapon"]:SetValue(client.leaderstats.Equips:GetAttribute("Weapon"))
-    end
-})
-
-Tabs["Castle"]:AddToggle("tAutoCastle", {
-    Title = "Auto Join Castle";
-    Default = false;
-    Callback = function(Value)
-        if Value then
-            task.spawn(function()
-                workspace.__Main.__World["World 1"].ModelStreamingMode = "Persistent"
-                while options["tAutoCastle"].Value do
-                    client:RequestStreamAroundAsync(Vector3.new(578, 28, 134))
-                    local castle = workspace.__Main.__Dungeon:WaitForChild("Castle", 2)
-                    if castle then
-                        if options["dCastleWeapon"].Value then
-                            general_bridge:Fire({
-                                ["Name"] = options["dCastleWeapon"].Value;
-                                ["Event"] = "WeaponAction";
-                                ["Action"] = "Equip";
-                            })
-                        end
-                        general_bridge:Fire({
-                            ["Check"] = false;
-                            ["Event"] = "CastleAction";
-                            ["Action"] = "Join";
-                        })
-                    end
-                end
-                workspace.__Main.__World["World 1"].ModelStreamingMode = "Default"
-            end)
-        end
-    end
-})
-
 --DUNGEON TAB
 local p = Tabs["Dungeon"]:AddParagraph({
     Title = "Dungeon Status";
@@ -429,14 +395,94 @@ Tabs["Dungeon"]:AddToggle("tBuyDungTicket", {
 
 for i, v in worlds do
     Tabs["Dungeon"]:AddDropdown(`dDungeon{v}`, {
-        Title = `{v} Configuration`;
+        Title = `{v} ({mapinfo[v].Name}) Configuration`;
         Values = {"E", "D", "C", "B", "A", "S", "SS"};
         Default = {};
         Multi = true;
     })
 end
 
+-- CASTLE
 
+Tabs["Castle"]:AddDropdown("dCastleWeapon", {
+    Title = "Equip This Weapon For Castle";
+    Values = {};
+    Default = nil;
+})
+
+Tabs["Castle"]:AddButton({
+    Title = "Select Current Weapon";
+    Callback = function()
+        options["dCastleWeapon"]:SetValues({client.leaderstats.Equips:GetAttribute("Weapon")})
+        options["dCastleWeapon"]:SetValue(client.leaderstats.Equips:GetAttribute("Weapon"))
+    end
+})
+
+Tabs["Castle"]:AddToggle("tAutoCastle", {
+    Title = "Auto Join Castle";
+    Default = false;
+    Callback = function(Value)
+        if Value then
+            task.spawn(function()
+                workspace.__Main.__World["World 1"].ModelStreamingMode = "Persistent"
+                while options["tAutoCastle"].Value do
+                    client:RequestStreamAroundAsync(Vector3.new(578, 28, 134))
+                    local castle = workspace.__Main.__Dungeon:WaitForChild("Castle", 2)
+                    if castle then
+                        if options["dCastleWeapon"].Value then
+                            general_bridge:Fire({
+                                ["Name"] = options["dCastleWeapon"].Value;
+                                ["Event"] = "WeaponAction";
+                                ["Action"] = "Equip";
+                            })
+                        end
+                        general_bridge:Fire({
+                            ["Check"] = false;
+                            ["Event"] = "CastleAction";
+                            ["Action"] = "Join";
+                        })
+                    end
+                end
+                workspace.__Main.__World["World 1"].ModelStreamingMode = "Default"
+            end)
+        end
+    end
+})
+
+--RULES
+
+Tabs["Rules"]:AddDropdown("", {
+    Title = "World";
+    Values = foreach(worlds, function(key, value, tab)
+        tab[key] = mapinfo[value].Name
+    end);
+    Default = 1;
+    Multi = false;
+})
+
+Tabs["Rules"]:AddDropdown("", {
+    Title = "Rarity";
+    Values = {"E", "D", "C", "B", "A", "S", "SS"};
+    Default = 1;
+    Multi = false;
+})
+
+Tabs["Rules"]:AddToggle("", {
+    Title = "Only Double";
+    Default = false;
+})
+
+Tabs["Rules"]:AddToggle("", {
+    Title = "Only Red";
+    Default = false;
+})
+
+Tabs["Rules"]:AddButton({
+    Title = "Add Rule";
+    Callback = function()
+        
+    end
+})
 
 --TELEPORT TAB
 local ranks = {}
@@ -489,12 +535,5 @@ Tabs["Settings"]:AddToggle("tAutoExec", {
         getgenv().AutoExecCloudy = Value
     end
 })
-SaveManager:LoadAutoloadConfig()
 
 Window:SelectTab(1)
-
-for i, v in options do
-    v:OnChanged(function()
-        SaveManager:Save(options.SaveManager_ConfigList.Value)
-    end)
-end
