@@ -5,6 +5,7 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local options = Library.Options
+local rules = {}
 
 -- SERVICES
 local TweenService = game:GetService("TweenService")
@@ -65,6 +66,15 @@ local function await(event, options, timeout)
 	return be.Event:Wait()
 end
 
+local function CheckDungeonRules(dungeon)
+    for i, v in rules do
+        if v.World ~= GetIslandName(dungeon:GetAttribute("Dungeon")) then continue end
+        if v.Rarity ~= xtrafuncs.GetRankInfo(dungeon:GetAttribute("DungeonRank")) then continue end
+        if v.Red and not dungeon:GetAttribute("IsRedDungeon") then continue end
+        return true
+    end
+    return false
+end
 
 --[[
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -139,7 +149,7 @@ local function foreach(tab, func)
 	return ret
 end
 
-xtrafuncs.GetIslandName = function(id)
+local function GetIslandName(id)
     return mapinfo[id].Name
 end
 
@@ -227,8 +237,8 @@ Tabs["Auto Farm"]:AddToggle("tAutoMobs", {
                                 continue
                             end
                             if mobinfo[v:GetAttribute("Model")].Name == options["dMobSelect"].Value and (options["tFarmBrute"].Value or not mobinfo[v:GetAttribute("Id")].TypeG) then
-                                tweento(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0)).Completed:Wait()
-                                --tpto(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0))
+                                --tweento(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0)).Completed:Wait()
+                                tpto(v.CFrame * CFrame.new(8, 0, 0) * CFrame.Angles(0, math.rad(90), 0))
                                 local target = clientMobs:WaitForChild(v.Name, 2)
                                 if not target then continue end
                                 task.spawn(function()
@@ -358,7 +368,7 @@ Tabs["Dungeon"]:AddToggle("tJoinDungeon", {
                 while options["tJoinDungeon"].Value do
                     local dungeon = workspace.__Main.__Dungeon:WaitForChild("Dungeon", math.huge)
                     if options["tJoinDungeon"].Value and dungeon then
-                        if options[`dDungeon{dungeon:GetAttribute("MapName")}`].Value[xtrafuncs.GetRankInfo(dungeon:GetAttribute("DungeonRank"))] then
+                        if options[`dDungeon{dungeon:GetAttribute("MapName")}`].Value[xtrafuncs.GetRankInfo(dungeon:GetAttribute("DungeonRank"))] or CheckDungeonRules(dungeon) then
                             print("joining current dungeon caus")
                             if options["tBuyDungTicket"].Value then
                                 general_bridge:Fire({
@@ -381,7 +391,7 @@ Tabs["Dungeon"]:AddToggle("tJoinDungeon", {
                             task.wait(10)
                         end
                     end
-                    task.wait()
+                    task.wait(10)
                 end
             end)
         end
@@ -451,7 +461,7 @@ Tabs["Castle"]:AddToggle("tAutoCastle", {
 
 --RULES
 
-Tabs["Rules"]:AddDropdown("", {
+local rWorld = Tabs["Rules"]:AddDropdown("", {
     Title = "World";
     Values = foreach(worlds, function(key, value, tab)
         tab[key] = mapinfo[value].Name
@@ -460,19 +470,19 @@ Tabs["Rules"]:AddDropdown("", {
     Multi = false;
 })
 
-Tabs["Rules"]:AddDropdown("", {
+local rRarity = Tabs["Rules"]:AddDropdown("", {
     Title = "Rarity";
     Values = {"E", "D", "C", "B", "A", "S", "SS"};
     Default = 1;
     Multi = false;
 })
 
-Tabs["Rules"]:AddToggle("", {
+local rDD = Tabs["Rules"]:AddToggle("", {
     Title = "Only Double";
     Default = false;
 })
 
-Tabs["Rules"]:AddToggle("", {
+local rRed = Tabs["Rules"]:AddToggle("", {
     Title = "Only Red";
     Default = false;
 })
@@ -480,7 +490,20 @@ Tabs["Rules"]:AddToggle("", {
 Tabs["Rules"]:AddButton({
     Title = "Add Rule";
     Callback = function()
-        
+        table.insert(rules, {
+            World = rWorld.Value;
+            Rarity = rRarity.Value;
+            Double = rDD.Value;
+            Red = rRed.Value
+        })
+        local dungeon = workspace.__Main.__Dungeon:FindFirstChild("Dungeon")
+        if not dungeon then return end
+        for i, v in rules do
+            if v.World ~= GetIslandName(dungeon:GetAttribute("Dungeon")) then continue end
+            if v.Rarity ~= xtrafuncs.GetRankInfo(dungeon:GetAttribute("DungeonRank")) then continue end
+            if v.Red and not dungeon:GetAttribute("IsRedDungeon") then continue end
+            print("dungeon checked")
+        end
     end
 })
 
@@ -519,6 +542,20 @@ Tabs["Teleport"]:AddButton({
         })
         client:RequestStreamAroundAsync(Vector3.new(3928, 59, 3179))
         tpto(CFrame.new(3928, 59, 3179) * CFrame.new(0, 5, 0))
+    end
+})
+
+Tabs["Teleport"]:AddButton({
+    Title = "Teleport To Winter Island";
+    Description = "Will Only Tp If Map Is Loaded";
+    Callback = function()
+        Library:Notify({
+            Title = "Loading",
+            Content = "Preloading Map",
+            Duration = 2
+        })
+        client:RequestStreamAroundAsync(Vector3.new(4931, 30, -2152))
+        tpto(CFrame.new(4931, 30, -2152) * CFrame.new(0, 5, 0))
     end
 })
 
