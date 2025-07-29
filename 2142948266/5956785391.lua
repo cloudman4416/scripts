@@ -1,4 +1,4 @@
-local options, linked, SaveManager = loadfile("CloudHub/PJS/base.txt")()
+local options, linked, SaveManager = loadfile("CloudHub/PJS/base")()
 
 local TeleportService = game:GetService("TeleportService")
 

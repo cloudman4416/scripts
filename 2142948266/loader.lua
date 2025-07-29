@@ -1,13 +1,38 @@
 --loader
-makefolder("CloudHub")
-makefolder("CloudHub/PJS")
-
 local executor = identifyexecutor()
 local GuiService = game:GetService("GuiService")
 local HttpService = game:GetService("HttpService")
 GuiService.ErrorMessageChanged:Connect(function()
 	TeleportService:Teleport(5956785391, client)
 end)
+
+makefolder("CloudHub")
+makefolder("CloudHub/PJS")
+if not isfile("CloudHub/PJS/base") or not isfile("CloudHub/PJS/cache") then
+	print("downloading")
+	local ret = request({
+		Url = "https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main/2142948266/base.lua",
+        Method = "GET",
+	})
+	writefile("CloudHub/PJS/base", ret.Body)
+	writefile("CloudHub/PJS/cache", ret.Headers.ETag)
+	print("downloaded")
+else
+	local ret = request({
+		Url = "https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main/2142948266/base.lua",
+		Method = "GET",
+		Headers = {
+			["If-None-Match"] = readfile("CloudHub/PJS/cache")
+		}
+	})
+	if ret.StatusCode == 304 then
+		print(ret.Headers.ETag)
+		return
+	else
+		writefile("CloudHub/PJS/base", ret.Body)
+		writefile("CloudHub/PJS/cache", ret.Headers.ETag)
+	end
+end
 
 --[[local fixeable = {
     "Solara";
@@ -34,8 +59,8 @@ if table.find(fixeable, executor) then
     end
 end]]
 
-local baseUrl = `https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main/{game.GameId}/{game.PlaceId}.lua`
-local base64url = `https://api.github.com/repos/cloudman4416/scripts/contents/{game.GameId}/{game.PlaceId}.lua?ref=main`
+baseUrl = `https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main/{game.GameId}/{game.PlaceId}.lua`
+base64url = `https://api.github.com/repos/cloudman4416/scripts/contents/{game.GameId}/{game.PlaceId}.lua?ref=main`
 
 if base64 and base64.decode then
     local response = game:HttpGet(base64url)
