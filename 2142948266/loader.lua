@@ -27,7 +27,6 @@ else
 	})
 	if ret.StatusCode == 304 then
 		print(ret.Headers.ETag)
-		return
 	else
 		writefile("CloudHub/PJS/base", ret.Body)
 		writefile("CloudHub/PJS/cache", ret.Headers.ETag)
