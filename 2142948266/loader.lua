@@ -10,6 +10,23 @@ GuiService.ErrorMessageChanged:Connect(function()
 	TeleportService:Teleport(5956785391, client)
 end)
 
+
+
+local response = request({
+    Url = "https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main/2142948266/base.lua",
+    Method = "GET",
+    Headers = {
+        ["If-None-Match"] = (isfile("CloudHub/PJS/base") and isfile("CloudHub/PJS/cache") and readfile("CloudHub/PJS/cache")) or "none"
+    }
+})
+
+if response.StatusCode == 304 then
+
+else
+    writefile("CloudHub/PJS/base", response.Body)
+end
+
+
 --[[local fixeable = {
     "Solara";
     "Xeno"
