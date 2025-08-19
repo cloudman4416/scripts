@@ -2,21 +2,24 @@
 local options, linked, SaveManager = loadfile("CloudHub/PJS/base")()
 
 -- SERVICES
-local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
-local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- VARS
-local client = Players.LocalPlayer
-repeat task.wait() until ReplicatedStorage.Player_Data:FindFirstChild(client.Name)
-local playerValues = ReplicatedStorage.PlayerValues:WaitForChild(client.Name, 1)
-local playerData = ReplicatedStorage.Player_Data:WaitForChild(client.Name, 1)
-local Handle_Initiate_S = ReplicatedStorage.Remotes.To_Server:WaitForChild("Handle_Initiate_S")
-local Handle_Initiate_S_ = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("To_Server"):WaitForChild("Handle_Initiate_S_")
-local gameId = game.PlaceId
 
+linked.ordered = {
+    "Muichiro Tokito";
+    "Rengoku";
+    "Nomay Bandit Boss";
+    "Akeza";
+    "Inosuke";
+    "Enme";
+    "Slasher";
+    "Sound Trainee";
+    "Tengen";
+    "Snow Trainee";
+    "Douma";
+    "Renpeke";
+    "Swampy";
+}
 
 linked.bosses = {}
 for i, v in workspace.Mobs.Bosses:GetDescendants() do
