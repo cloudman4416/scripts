@@ -10,8 +10,6 @@ GuiService.ErrorMessageChanged:Connect(function()
 	TeleportService:Teleport(5956785391, client)
 end)
 
-
-
 local response = request({
     Url = "https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main/2142948266/base.lua",
     Method = "GET",
@@ -20,10 +18,22 @@ local response = request({
     }
 })
 
-if response.StatusCode == 304 then
-
-else
+if response.StatusCode == 200 then
+    writefile("CloudHub/PJS/cache", response.Headers.ETag)
     writefile("CloudHub/PJS/base", response.Body)
+end
+
+local response = request({
+    Url = "https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main/logo.webp",
+    Method = "GET",
+    Headers = {
+        ["If-None-Match"] = (isfile("CloudHub/logo.webp") and isfile("CloudHub/cache") and readfile("CloudHub/cache")) or "none"
+    }
+})
+
+if response.StatusCode == 200 then
+    writefile("CloudHub/cache", response.Headers.ETag)
+    writefile("CloudHub/logo.webp", response.Body)
 end
 
 
