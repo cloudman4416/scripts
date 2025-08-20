@@ -1,4 +1,4 @@
---loader
+--LOADER
 makefolder("CloudHub")
 makefolder("CloudHub/PJS")
 
