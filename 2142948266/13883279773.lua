@@ -5,34 +5,23 @@ local options, linked, SaveManager = loadfile("CloudHub/PJS/base")()
 
 -- VARS
 
-linked.ordered = {
-    "Susamaru";
-    "Yahaba";
-    "Sanemi";
-    "Bandit Kaden";
-    "Zanegutsu Kuuchie";
-    "Bandit Zoku";
-    "Sabito";
-    "Giyu";
-    "Shiron";
-    "Nezuko";
-    "Slasher";
-}
-
-linked.bosses = {}
-for i, v in workspace.Mobs.Bosses:GetDescendants() do
-    if v:IsA("Configuration") and v:FindFirstChild("Npc_Configuration") then
-        local info = require(v.Npc_Configuration)
-        linked.bosses[info["Name"]] = info["Npc_Spawning"]["Spawn_Locations"][1]
+options.tAutoFlower:OnChanged(function(Value)
+    if Value then
+        options["tAutoBoss"]:SetValue(false)
+        local farmhelp = linked.farmHelper()
+        while options["tAutoFlower"].Value do
+            for i, v in ipairs(workspace.Demon_Flowers_Spawn:GetChildren()) do
+                if v:IsA("Model") and options["tAutoFlower"].Value then
+                    pcall(function()
+                        linked.tweento(v:GetModelCFrame()).Completed:Wait()
+                        v["Cube.002"].CFrame = v["Cube.002"].CFrame * CFrame.new(0, 5, 0)
+                        task.wait(0.5)
+                        fireproximityprompt(v["Cube.002"].Pick_Demon_Flower_Thing)
+                        task.wait(0.5)
+                    end)
+                end
+            end
+        end
+        farmhelp:Disconnect()
     end
-end
-local temp = {
-    workspace.Mobs.Bandits.Zone1.Boss;
-    workspace.Mobs.Bandits.Zone2.Kaden;
-}
-for i, v in temp do
-    local info = require(v.Npc_Configuration)
-    linked.bosses[info["Name"]] = info["Npc_Spawning"]["Spawn_Locations"][1]
-end
-
-temp = nil
+end)
