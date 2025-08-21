@@ -19,7 +19,7 @@ local response = request({
 })
 
 if response.StatusCode == 200 then
-    writefile("CloudHub/PJS/cache", response.Headers.ETag)
+    writefile("CloudHub/PJS/cache", response.Headers.ETag or response.Headers.etag or "")
     writefile("CloudHub/PJS/base", response.Body)
 end
 
@@ -35,7 +35,7 @@ if response.StatusCode == 200 then
     -- Only fetch the image again if changed
     local image = game:HttpGet("https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main/logo.webp")
     writefile("CloudHub/logo.webp", image)
-    writefile("CloudHub/cache", response.Headers.ETag)
+    writefile("CloudHub/cache", response.Headers.ETag or response.Headers.etag or "")
 end
 
 
