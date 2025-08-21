@@ -23,7 +23,7 @@ if response.StatusCode == 200 then
     writefile("CloudHub/PJS/base", response.Body)
 end
 
-local response = request({
+response = request({
     Url = "https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main/logo.webp",
     Method = "GET",
     Headers = {
@@ -67,7 +67,7 @@ end]]
 local baseUrl = `https://raw.githubusercontent.com/cloudman4416/scripts/refs/heads/main/{game.GameId}/{game.PlaceId}.lua`
 local base64url = `https://api.github.com/repos/cloudman4416/scripts/contents/{game.GameId}/{game.PlaceId}.lua?ref=main`
 
-if base64 and base64.decode then
+--[[if base64 and base64.decode then
     local response = game:HttpGet(base64url)
     local data = HttpService:JSONDecode(response)
 
@@ -81,4 +81,14 @@ else
 	if not succ then
 		print(err)
 	end
+end]]
+local succ, err;
+while not succ do
+    succ, err = pcall(function()
+        loadstring(game:HttpGet(baseurl))()
+    end)
+    if not succ then
+        task.wait(3)
+        print(err)
+    end
 end
