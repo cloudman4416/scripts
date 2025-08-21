@@ -75,7 +75,7 @@ local base64url = `https://api.github.com/repos/cloudman4416/scripts/contents/{g
     loadstring(base64decoded)()
 else
 	local succ, err = pcall(function()
-		loadstring(game:HttpGet(baseurl))()
+		loadstring(game:HttpGet(baseUrl))()
 	end)
 	
 	if not succ then
@@ -85,10 +85,10 @@ end]]
 local succ, err;
 while not succ do
     succ, err = pcall(function()
-        loadstring(game:HttpGet(baseurl))()
+        loadstring(game:HttpGet(baseUrl))()
     end)
     if not succ then
-        task.wait(3)
         print(err)
+        task.wait(3)
     end
 end
