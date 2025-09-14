@@ -96,15 +96,15 @@ if base64 and base64.decode then
 		local data = HttpService:JSONDecode(response)
 
 		local base64decoded = base64.decode(data.content:gsub("\n", ""))
-		loadstring(base64decoded)()
+		loadstring(base64decoded, "Cloudhub")()
 	end)
 	if not succ then
 		print(err)
-		loadstring(game:HttpGet(baseUrl))()
+		loadstring(game:HttpGet(baseUrl), "Cloudhub")()
 	end
 else
 	local succ, err = pcall(function()
-		loadstring(game:HttpGet(baseUrl))()
+		loadstring(game:HttpGet(baseUrl), "Cloudhub")()
 	end)
 	if not succ then
 		print(err)
@@ -115,7 +115,7 @@ if queue_on_teleport and not getgenv().CloudHub then
     getgenv().CloudHub = true
     client.OnTeleport:Once(function(State)
 		if getgenv().AutoExecCloudy then
-        	queue_on_teleport(`loadstring(game:HttpGet("https://raw.githubusercontent.com/cloudman4416/scripts/main/Loader.lua"))()`)
+        	queue_on_teleport(`loadstring(game:HttpGet("https://raw.githubusercontent.com/cloudman4416/scripts/main/Loader.lua"), "Cloudhub")()`)
 		end
     end)
 end
