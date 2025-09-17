@@ -140,7 +140,7 @@ while not succ do
 			Text = err;
 			Callback = bindable;
 			Button1 = "Copy Report";
-			Duration = 20;
+			Duration = math.huge;
 		})
         task.wait(5)
     end
