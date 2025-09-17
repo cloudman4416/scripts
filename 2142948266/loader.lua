@@ -4,6 +4,7 @@ makefolder("CloudHub/PJS")
 
 local executor = identifyexecutor()
 local GuiService = game:GetService("GuiService")
+local CoreGui = game:GetService("StarterGui")
 local HttpService = game:GetService("HttpService")
 local TeleportService = game:GetService("TeleportService")
 GuiService.ErrorMessageChanged:Connect(function()
@@ -126,6 +127,11 @@ while not succ do
     end)
     if not succ then
         print(err)
-        task.wait(3)
+		CoreGui:SetCore("SendNotification", {
+			Title = "Cloudhub Bug Report";
+			Text = err;
+			Duration = 60;
+		})
+        task.wait(5)
     end
 end
