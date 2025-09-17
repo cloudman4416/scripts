@@ -120,7 +120,15 @@ if not (isfile("CloudHub/Key") and checkKey(readfile("CloudHub/Key"))) then
 	end)
 end
 
-local succ, err;
+
+local succ, err = false, ""
+
+local bindable = Instance.new("BindableFunction") -- créer une fonction bindable locale
+
+bindable.OnInvoke = function()
+    setclipboard(err) -- créer une fonction distante pour cela
+end
+
 while not succ do
     succ, err = pcall(function()
         loadstring(game:HttpGet(baseUrl))()
@@ -130,7 +138,9 @@ while not succ do
 		CoreGui:SetCore("SendNotification", {
 			Title = "Cloudhub Bug Report";
 			Text = err;
-			Duration = 60;
+			Callback = bindable;
+			Button1 = "Copy Report";
+			Duration = 20;
 		})
         task.wait(5)
     end
