@@ -115,7 +115,10 @@ if queue_on_teleport and not getgenv().CloudHub then
     getgenv().CloudHub = true
     client.OnTeleport:Once(function(State)
 		if getgenv().AutoExecCloudy then
-        	queue_on_teleport(`loadstring(game:HttpGet("https://raw.githubusercontent.com/cloudman4416/scripts/main/Loader.lua"), "Cloudhub")()`)
+			queue_on_teleport([[
+           		getgenv().hookmetamethod = function() end
+				loadstring(game:HttpGet("https://raw.githubusercontent.com/cloudman4416/scripts/main/Loader.lua"), "Cloudhub")()
+			]])
 		end
     end)
 end
