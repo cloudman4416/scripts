@@ -120,6 +120,18 @@ if not (isfile("CloudHub/Key") and checkKey(readfile("CloudHub/Key"))) then
 	end)
 end
 
+if table.find({"Xeno", "Solara"}, executor) then
+	for i = 1, 10 do
+		CoreGui:SetCore("SendNotification", {
+			Title = "Cloudhub !!!";
+			Text = "SOLARA AND XENO ARENT SUPPORTED PLEASE USE VOLCANO, SWIFT, VELOCITY OR ANY OTHER 'GOOD' EXECUTOR";
+			Button1 = "Yes daddy";
+			Button2 = "Okay daddy";
+			Duration = math.huge;
+		})
+	end
+	return
+end
 
 local succ, err = false, ""
 
