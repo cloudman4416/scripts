@@ -1,7 +1,7 @@
 --LOBBY
 local options, linked, SaveManager = loadfile("CloudHub/PJS/base")()
 
-if not options then return end
+if not options then return true end
 
 local TeleportService = game:GetService("TeleportService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
