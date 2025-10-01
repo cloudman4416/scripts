@@ -1,7 +1,7 @@
 --DUNGEON
 local options, linked, SaveManager = loadfile("CloudHub/PJS/base")()
 
-if not options then return end
+if not options then return true end
 
 -- SERVICES
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
