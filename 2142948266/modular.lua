@@ -1,3 +1,11 @@
+local function notif(text, button)
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Cloudhub Notif";
+        Text = text;
+        Button1 = button;
+        Duration = math.huge;
+    })
+end
 return setmetatable({
     ["ReplicatedStorage.Modules.Global.Map_Locaations"] = {["Kiribating Village"]=Vector3.new(123.877,279.708,-1624.7),["Zapiwara Cave"]=Vector3.new(28.4759,273.369,-2419.1),["Butterfly Mension"]=Vector3.new(2989.09,313.501,-3876.9),["Zapiwara Mountain"]=Vector3.new(-330.74,423.358,-2331.7),["Ushumaru Village"]=Vector3.new(-468.20,273.851,-3331.9),["Waroru Cave"]=Vector3.new(603.616,275.667,-2562.0),["Kabiwaru Village"]=Vector3.new(1995.31,313.408,-2971.8),["Abubu Cave"]=Vector3.new(1074,273.615,-3553.1),["Final Selection"]=Vector3.new(5161.06,363.375,-2425.2),["Ouwbayashi Home"]=Vector3.new(1582.92,313.408,-4607.2),["Wind Trainer"]=Vector3.new(1737.56,331.838,-3526.3),["Dangerous Woods"]=Vector3.new(4022.73,340.414,-3956.3),["Slasher Demon"]=Vector3.new(4307.15,339.714,-4256.1),Dungeon=Vector3.new(-1117.3,280.894,-1580.1),["Nomay Village"]=Vector3.new(3562.02,670.609,-2109.1),["Cave 1"]=Vector3.new(4252.93,671.172,581.171),["Frozen Lake"]=Vector3.new(2049.28,480.520,-769.82),["Village 2"]=Vector3.new(1215.52,566.895,95.4789),["Mist trainer location"]=Vector3.new(4324.73,670.533,-569.17),["Wop's training grounds"]=Vector3.new(223.949,595.145,483.423),["Beast Cave"]=Vector3.new(1840.25,481.143,37.3059),["Wop City"]=Vector3.new(-31.218,598.776,-431.30),["Mugen Train Station"]=Vector3.new(783.809,494.721,900.331),["Akeza Cave"]=Vector3.new(1902.86,553.568,-150.78),["Cave 2"]=Vector3.new(1182.69,484.872,-1192.2),["Sound Cave"]=Vector3.new(1828.77,484.727,-2770.8),["Snowy Place"]=Vector3.new(379.039,529.318,-2865.5),["Devourers Jaw"]=Vector3.new(480.652,505.286,-1864.4)},
     ["Workspace.Mobs.Bosses.Muichiro.Npc_Configuration"] = {Name="Muichiro Tokito",Code="Muichiro",Npc_Spawning={Spawn_Locations={Vector3.new(4480.16,670.533,-567.08)}}},
