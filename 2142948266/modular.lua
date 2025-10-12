@@ -67,7 +67,6 @@ return setmetatable({
     __index = function(_, key)
         if key == "ReplicatedStorage.Modules.Global.skill_cooldowns" then return end
         notif("This function is not available because your executor is too weak", "Okay Daddy Cloudman I will change executor")
-        notif("This function is not available because your executor is too weak", "Okay Daddy Cloudman I will change executor")
         print(_, key)
     end
 })
