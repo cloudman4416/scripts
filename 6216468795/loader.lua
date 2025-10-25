@@ -117,7 +117,7 @@ disc.OnInvoke = function()
     setclipboard("https://discord.gg/Ma7yYADwrw")
 end
 
-for i = 1, 5 do
+for i = 1, 3 do
     StarterGui:SetCore("SendNotification", {
         Title = "Cloudhub !!!";
         Text = "This script is BETA, please join the discord for updates";
