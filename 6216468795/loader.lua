@@ -104,11 +104,28 @@ end]]
 if table.find({"Xeno", "Solara"}, executor) then
 	StarterGui:SetCore("SendNotification", {
 		Title = "Cloudhub !!!";
-		Text = "SOLARA and XENO dont support the entire cloudhub, some functionnalities require a better executor";
+		Text = "Your executor dont support this script";
 		Button1 = "Yes daddy";
 		Button2 = "Okay daddy";
 		Duration = math.huge;
 	})
+    return
+end
+
+local disc = Instance.new("BindableFunction")
+disc.OnInvoke = function()
+    setclipboard("https://discord.gg/Ma7yYADwrw")
+end
+
+for i = 1, 5 do
+    StarterGui:SetCore("SendNotification", {
+        Title = "Cloudhub !!!";
+        Text = "This script is BETA, please join the discord for updates";
+        Button1 = "Copy discord";
+        Button2 = "I joined";
+        Callback = disc;
+        Duration = math.huge;
+    })
 end
 
 local succ, err = false, ""
