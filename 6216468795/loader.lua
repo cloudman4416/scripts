@@ -43,7 +43,7 @@ end
 
 makefolder("CloudHub")
 
---[[if not checkKey((isfile("CloudHub/Key") and readfile("CloudHub/Key"))) then
+if not checkKey((isfile("CloudHub/Key") and readfile("CloudHub/Key"))) then
 	pcall(function()
 		local Fluent = loadstring(game:HttpGet("https://github.com/cloudman4416/Fluent_Clone/releases/latest/download/main.lua"))()
 		local options = Fluent.Options
@@ -99,7 +99,7 @@ makefolder("CloudHub")
 
 		while Fluent.Unloaded == false do task.wait() end
 	end)
-end]]
+end
 
 if table.find({"Xeno", "Solara"}, executor) then
 	StarterGui:SetCore("SendNotification", {
@@ -117,7 +117,7 @@ disc.OnInvoke = function()
     setclipboard("https://discord.gg/Ma7yYADwrw")
 end
 
-for i = 1, 3 do
+--[[for i = 1, 5 do
     StarterGui:SetCore("SendNotification", {
         Title = "Cloudhub !!!";
         Text = "This script is BETA, please join the discord for updates";
@@ -126,7 +126,7 @@ for i = 1, 3 do
         Callback = disc;
         Duration = math.huge;
     })
-end
+end]]
 
 local succ, err = false, ""
 
