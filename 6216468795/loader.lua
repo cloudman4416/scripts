@@ -11,6 +11,8 @@ GuiService.ErrorMessageChanged:Connect(function()
 	TeleportService:Teleport(18337464872, client)
 end)
 
+getgenv().AutoExecCloudy = true
+
 local function download(link, location, cache)
     local response = request({
         Url = link,
